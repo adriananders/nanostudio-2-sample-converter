@@ -1,0 +1,1 @@
+Download sfz test suite files from https://github.com/sfz/tests. Test suite will skip related tests if sfz files are not found.

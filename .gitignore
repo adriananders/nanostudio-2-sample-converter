@@ -131,3 +131,4 @@ dmypy.json
 # Development artifacts
 .idea/
 .DS_Store
+tests/sfz/sample-files/sfz_regression_test_suite/sfz/tests
