@@ -1,0 +1,108 @@
+<?xml version="1.0" ?>
+<control>
+	<global>
+		<group hivel="54">
+			<region sample="XYZD2\ABC_21.wav" key="21" hikey="22" tune="25"/>
+			<region sample="XYZD2\ABC_25.wav" key="25" lokey="23" hikey="26" tune="7"/>
+			<region sample="XYZD2\ABC_29.wav" key="29" lokey="27" hikey="30" tune="7"/>
+			<region sample="XYZD2\ABC_33.wav" key="33" lokey="31" hikey="34" tune="10"/>
+			<region sample="XYZD2\ABC_37.wav" key="37" lokey="35" hikey="38" tune="8"/>
+			<region sample="XYZD2\ABC_41.wav" key="41" lokey="39" hikey="42"/>
+			<region sample="XYZD2\ABC_45.wav" key="45" lokey="43" hikey="46" tune="8"/>
+			<region sample="XYZD2\ABC_49.wav" key="49" lokey="47" hikey="50"/>
+			<region sample="XYZD2\ABC_53.wav" key="53" lokey="51" hikey="54"/>
+			<region sample="XYZD2\ABC_57.wav" key="57" lokey="55" hikey="58"/>
+			<region sample="XYZD2\ABC_61.wav" key="61" lokey="59" hikey="62" tune="-2"/>
+			<region sample="XYZD2\ABC_65.wav" key="65" lokey="63" hikey="66"/>
+			<region sample="XYZD2\ABC_69.wav" key="69" lokey="67" hikey="70" tune="-2"/>
+			<region sample="XYZD2\ABC_73.wav" key="73" lokey="71" hikey="74" tune="-4"/>
+			<region sample="XYZD2\ABC_77.wav" key="77" lokey="75" hikey="78" tune="-5"/>
+			<region sample="XYZD2\ABC_81.wav" key="81" lokey="79" hikey="82" tune="-6"/>
+			<region sample="XYZD2\ABC_85.wav" key="85" lokey="83" hikey="86" tune="-8"/>
+			<region sample="XYZD2\ABC_89.wav" key="89" lokey="87" tune="-10"/>
+			<region sample="XYZD2\ABC_93.wav" key="93" lokey="90" hikey="94" tune="-12" loop_mode="one_shot"/>
+			<region sample="XYZD2\ABC_97.wav" key="97" lokey="95" hikey="98" tune="-20" loop_mode="one_shot"/>
+			<region sample="XYZD2\ABC_101.wav" key="101" lokey="99" hikey="102" tune="-16" loop_mode="one_shot"/>
+			<region sample="XYZD2\ABC_105.wav" key="105" lokey="103" hikey="112" tune="-15" loop_mode="one_shot"/>
+		</group>
+		<group lovel="55" hivel="107">
+			<region sample="XYZD4\GFDF_21.wav" key="21" hikey="22" tune="25"/>
+			<region sample="XYZD4\GFDF_25.wav" key="25" lokey="23" hikey="26" tune="7"/>
+			<region sample="XYZD4\GFDF_29.wav" key="29" lokey="27" hikey="30" tune="7"/>
+			<region sample="XYZD4\GFDF_33.wav" key="33" lokey="31" hikey="34" tune="10"/>
+			<region sample="XYZD4\GFDF_37.wav" key="37" lokey="35" hikey="38" tune="8"/>
+			<region sample="XYZD4\GFDF_41.wav" key="41" lokey="39" hikey="42"/>
+			<region sample="XYZD4\GFDF_45.wav" key="45" lokey="43" hikey="46" tune="8"/>
+			<region sample="XYZD4\GFDF_49.wav" key="49" lokey="47" hikey="50"/>
+			<region sample="XYZD4\GFDF_53.wav" key="53" lokey="51" hikey="54"/>
+			<region sample="XYZD4\GFDF_57.wav" key="57" lokey="55" hikey="58"/>
+			<region sample="XYZD4\GFDF_61.wav" key="61" lokey="59" hikey="62" tune="-2"/>
+			<region sample="XYZD4\GFDF_65.wav" key="65" lokey="63" hikey="66"/>
+			<region sample="XYZD4\GFDF_69.wav" key="69" lokey="67" hikey="70" tune="-2"/>
+			<region sample="XYZD4\GFDF_73.wav" key="73" lokey="71" hikey="74" tune="-4"/>
+			<region sample="XYZD4\GFDF_77.wav" key="77" lokey="75" hikey="78" tune="-5"/>
+			<region sample="XYZD4\GFDF_81.wav" key="81" lokey="79" hikey="82" tune="-6"/>
+			<region sample="XYZD4\GFDF_85.wav" key="85" lokey="83" hikey="86" tune="-8"/>
+			<region sample="XYZD4\GFDF_89.wav" key="89" lokey="87" tune="-10"/>
+			<region sample="XYZD4\GFDF_93.wav" key="93" lokey="90" hikey="94" tune="-12" loop_mode="one_shot"/>
+			<region sample="XYZD4\GFDF_97.wav" key="97" lokey="95" hikey="98" tune="-20" loop_mode="one_shot"/>
+			<region sample="XYZD4\GFDF_101.wav" key="101" lokey="99" hikey="102" tune="-16" loop_mode="one_shot"/>
+			<region sample="XYZD4\GFDF_105.wav" key="105" lokey="103" hikey="112" tune="-15" loop_mode="one_shot"/>
+		</group>
+		<group lovel="108">
+			<region sample="XYZD6\TREF_21.wav" key="21" hikey="22"/>
+			<region sample="XYZD6\TREF_25.wav" key="25" lokey="23" hikey="26"/>
+			<region sample="XYZD6\TREF_29.wav" key="29" lokey="27" hikey="30"/>
+			<region sample="XYZD6\TREF_33.wav" key="33" lokey="31" hikey="34"/>
+			<region sample="XYZD6\TREF_37.wav" key="37" lokey="35" hikey="38"/>
+			<region sample="XYZD6\TREF_41.wav" key="41" lokey="39" hikey="42"/>
+			<region sample="XYZD6\TREF_45.wav" key="45" lokey="43" hikey="46"/>
+			<region sample="XYZD6\TREF_49.wav" key="49" lokey="47" hikey="50"/>
+			<region sample="XYZD6\TREF_53.wav" key="53" lokey="51" hikey="54"/>
+			<region sample="XYZD6\TREF_57.wav" key="57" lokey="55" hikey="58"/>
+			<region sample="XYZD6\TREF_61.wav" key="61" lokey="59" hikey="62"/>
+			<region sample="XYZD6\TREF_65.wav" key="65" lokey="63" hikey="66"/>
+			<region sample="XYZD6\TREF_69.wav" key="69" lokey="67" hikey="70"/>
+			<region sample="XYZD6\TREF_73.wav" key="73" lokey="71" hikey="74"/>
+			<region sample="XYZD6\TREF_77.wav" key="77" lokey="75" hikey="78"/>
+			<region sample="XYZD6\TREF_81.wav" key="81" lokey="79" hikey="82"/>
+			<region sample="XYZD6\TREF_85.wav" key="85" lokey="83" hikey="86"/>
+			<region sample="XYZD6\TREF_89.wav" key="89" lokey="87"/>
+			<region sample="XYZD6\TREF_93.wav" key="93" lokey="90" hikey="94" loop_mode="one_shot"/>
+			<region sample="XYZD6\TREF_97.wav" key="97" lokey="95" hikey="98" loop_mode="one_shot"/>
+			<region sample="XYZD6\TREF_101.wav" key="101" lokey="99" hikey="102" loop_mode="one_shot"/>
+			<region sample="XYZD6\TREF_105.wav" key="105" lokey="103" hikey="112" loop_mode="one_shot"/>
+		</group>
+		<group trigger="release_key" rt_decay="1" volume="-34" volume_oncc2="12">
+			<region sample="EW\KJHD_22.wav" key="22" lokey="21" hikey="23" tune="3"/>
+			<region sample="EW\KJHD_25.wav" key="25" lokey="24" hikey="26" tune="7"/>
+			<region sample="EW\KJHD_28.wav" key="28" lokey="27" hikey="29" tune="8"/>
+			<region sample="EW\KJHD_31.wav" key="31" lokey="30" hikey="32" tune="5"/>
+			<region sample="EW\KJHD_34.wav" key="34" lokey="33" hikey="35" tune="9"/>
+			<region sample="EW\KJHD_37.wav" key="37" lokey="36" hikey="38" tune="7"/>
+			<region sample="EW\KJHD_40.wav" key="40" lokey="39" hikey="41" tune="4"/>
+			<region sample="EW\KJHD_43.wav" key="43" lokey="42" hikey="44" tune="3"/>
+			<region sample="EW\KJHD_46.wav" key="46" lokey="45" hikey="47"/>
+			<region sample="EW\KJHD_49.wav" key="49" lokey="48" hikey="50"/>
+			<region sample="EW\KJHD_52.wav" key="52" lokey="51" hikey="53"/>
+			<region sample="EW\KJHD_55.wav" key="55" lokey="54" hikey="56"/>
+			<region sample="EW\KJHD_58.wav" key="58" lokey="57" hikey="59"/>
+			<region sample="EW\KJHD_61.wav" key="61" lokey="60" hikey="62" tune="-2" volume="-38"/>
+			<region sample="EW\KJHD_64.wav" key="64" lokey="63" hikey="65" volume="-38"/>
+			<region sample="EW\KJHD_67.wav" key="67" lokey="66" hikey="68" tune="-3" volume="-38"/>
+			<region sample="EW\KJHD_70.wav" key="70" lokey="69" hikey="71" tune="-2" volume="-39"/>
+			<region sample="EW\KJHD_73.wav" key="73" lokey="72" hikey="74" tune="-4" volume="-40"/>
+			<region sample="EW\KJHD_76.wav" key="76" lokey="75" hikey="77" tune="-6" volume="-40"/>
+			<region sample="EW\KJHD_79.wav" key="79" lokey="78" hikey="80" tune="-6" volume="-40"/>
+			<region sample="EW\KJHD_81.wav" key="81" lokey="81" hikey="83" tune="-6" volume="-42"/>
+			<region sample="EW\KJHD_85.wav" key="85" lokey="84" hikey="86" tune="-7" volume="-42"/>
+			<region sample="EW\KJHD_88.wav" key="88" lokey="87" hikey="89" tune="-6" volume="-42"/>
+			<region sample="EW\KJHD_91.wav" key="91" lokey="90" hikey="92" tune="-11" volume="-45"/>
+			<region sample="EW\KJHD_94.wav" key="94" lokey="93" hikey="95" tune="-19" volume="-45"/>
+			<region sample="EW\KJHD_97.wav" key="97" lokey="96" hikey="98" tune="-20" volume="-45"/>
+			<region sample="EW\KJHD_100.wav" key="100" lokey="99" hikey="101" tune="-23" volume="-50"/>
+			<region sample="EW\KJHD_103.wav" key="103" lokey="102" hikey="104" tune="-20" volume="-50"/>
+			<region sample="EW\KJHD_106.wav" key="106" lokey="105" hikey="112" tune="-20" volume="-50"/>
+		</group>
+	</global>
+</control>

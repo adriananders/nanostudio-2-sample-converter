@@ -46,11 +46,11 @@ from nanostudio_2_sample_converter.formats.nanostudio_2.utils import (
 
 class Obsidian:
     def __init__(self):
-        self.xml = ET.Element("Root")
-        self.create_default_xml()
-        self.xml_string = self.pretty_xml()
+        self.xml = Obsidian.create_default_xml()
+        self.xml_string = Obsidian.create_output_xml(self.xml)
 
-    def create_default_xml(self):
+    @staticmethod
+    def create_default_xml():
         analog = create_xml(schema=ANALOG)
         wavetable_table = create_xml(schema=WAVETABLE_TABLE)
         wavetable = create_xml(schema=WAVETABLE, children=[wavetable_table])
@@ -148,13 +148,14 @@ class Obsidian:
         reverb = create_xml(schema=REVERB)
         effects = create_xml(schema=EFFECTS, children=[multi_effects, delay, reverb])
         macros = create_xml(schema=MACROS)
-        self.xml = create_xml(schema=ROOT, children=[voice, effects, macros])
+        return create_xml(schema=ROOT, children=[voice, effects, macros])
 
-    def pretty_xml(self):
-        xml_string = ET.tostring(self.xml)
+    @staticmethod
+    def create_output_xml(xml_data):
+        xml_string = ET.tostring(xml_data)
         pretty_xml_string = xml.dom.minidom.parseString(xml_string).toprettyxml()
         return pretty_xml_string
 
     def import_package_xml(self, xml_path):
         self.xml = ET.parse(xml_path)
-        self.xml_string = self.pretty_xml()
+        self.xml_string = self.create_output_xml(self.xml)
