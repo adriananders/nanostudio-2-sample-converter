@@ -83,9 +83,7 @@ class Sfz:
 
     @staticmethod
     def find_valid_opcodes(element, opcodes):
-        return {
-            key: value for (key, value) in element.attrib.items() if key not in opcodes
-        }
+        return {key: value for (key, value) in element.attrib.items() if key in opcodes}
 
     @staticmethod
     def merge_dictionaries(dictionary_1, dictionary_2):
@@ -188,7 +186,7 @@ class Sfz:
         sfz_xml = ET.fromstring(sfz_string)
         self.remove_unsupported_headers(sfz_xml)
         self.remove_unsupported_opcodes(sfz_xml)
-
+        self.convert_opcodes_key_string_to_key_number(sfz_xml)
         sfz_xml = self.move_headers_into_hierachies(sfz_xml)
         self.distribute_opcodes_down_to_correct_level(sfz_xml, {})
         self.aggregate_opcodes_up_to_correct_level(sfz_xml)
