@@ -7,4 +7,5 @@ class TestObisidian:
     def test_init(self):
         obsidian = Obsidian().xml_string
         with open("./obsidian/sample-files/Package.obs", "r") as sample_default:
-            assert sample_default.read() == obsidian
+            expected = sample_default.read()
+            assert expected == obsidian

@@ -1,0 +1,2 @@
+lxml == 4.6.3
+pretty_midi == 0.2.9

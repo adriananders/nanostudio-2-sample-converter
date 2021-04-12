@@ -1,7 +1,8 @@
 """
 NanoStudio 2 Utility functions
 """
-import xml.etree.ElementTree as ET
+from copy import deepcopy
+from lxml import etree as ET
 
 
 def coalesce_parameter(settings, key, default_value):
@@ -12,7 +13,7 @@ def set_xml_attribute(element, attribute, settings, key, default_value):
     element.set(attribute, coalesce_parameter(settings, key, default_value))
 
 
-def create_xml(schema, tag_suffix="", settings=None, children=None):
+def create_xml(schema, tag_suffix="", settings=None, children=None, copy=False):
     tag = schema["tag"] + tag_suffix
     default_settings = schema["default_settings"]
     element = ET.Element(tag)
@@ -26,7 +27,10 @@ def create_xml(schema, tag_suffix="", settings=None, children=None):
         )
     if children:
         for child in children:
-            element.append(child)
+            if copy:
+                element.append(deepcopy(child))
+            else:
+                element.append(child)
     return element
 
 

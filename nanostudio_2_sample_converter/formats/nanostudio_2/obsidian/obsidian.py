@@ -2,8 +2,8 @@
 Obsidian patch functions
 Note: no public documentation exists for Obsidian instrument in NanoStudio 2.
 """
-import xml.etree.ElementTree as ET
 import xml.dom.minidom
+from lxml import etree as ET
 from nanostudio_2_sample_converter.formats.nanostudio_2.obsidian.schema import (
     ROOT,
     VOICE,
@@ -102,6 +102,7 @@ class Obsidian:
                     noise,
                     sampler,
                 ],
+                copy=True,
             )
             for o in list(range(0, 3))
         ]
