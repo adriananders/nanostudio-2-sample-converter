@@ -10,6 +10,7 @@ from nanostudio_2_sample_converter.formats.sfz.schema import (
     OPCODES,
     HEADERS_XPATH,
     KEY_OPCODES,
+    RENAME_OPCODE_ALIASES,
 )
 
 
@@ -20,6 +21,7 @@ class Sfz:
         self.headers_xpath = HEADERS_XPATH
         self.opcodes = OPCODES
         self.key_opcodes = KEY_OPCODES
+        self.rename_opcode_aliases = RENAME_OPCODE_ALIASES
 
     @staticmethod
     def remove_comment_filter(line):
@@ -174,6 +176,19 @@ class Sfz:
                 }
                 self.update_xml_attributes(element, key_opcodes)
 
+    def consolidate_opcode_aliases(self, sfz_xml):
+        for header in HEADERS:
+            for element in sfz_xml.iter(header):
+                old_name_opcodes = self.find_valid_opcodes(
+                    element, self.rename_opcode_aliases.keys()
+                )
+                new_name_opcodes = {
+                    self.rename_opcode_aliases[key]: value
+                    for (key, value) in old_name_opcodes.items()
+                }
+                self.update_xml_attributes(element, new_name_opcodes)
+                self.pop_xml_attributes(element, old_name_opcodes)
+
     def sfz_to_xml(self, sfz_file_path):
         with open(sfz_file_path, "r") as reader:
             sfz_lines = reader.readlines()
@@ -187,8 +202,8 @@ class Sfz:
         self.remove_unsupported_headers(sfz_xml)
         self.remove_unsupported_opcodes(sfz_xml)
         self.convert_opcodes_key_string_to_key_number(sfz_xml)
+        self.consolidate_opcode_aliases(sfz_xml)
         sfz_xml = self.move_headers_into_hierachies(sfz_xml)
         self.distribute_opcodes_down_to_correct_level(sfz_xml, {})
         self.aggregate_opcodes_up_to_correct_level(sfz_xml)
-
         return sfz_xml

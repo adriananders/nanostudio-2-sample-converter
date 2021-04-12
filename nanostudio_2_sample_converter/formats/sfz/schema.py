@@ -5,6 +5,11 @@ from nanostudio_2_sample_converter.formats.nanostudio_2.obsidian.schema import (
 )
 
 KEY_OPCODES = ["key", "lokey", "hikey", "pitch_keycenter"]
+RENAME_OPCODE_ALIASES = {
+    "loopmode": "loop_mode",
+    "loopstart": "loop_start",
+    "loopend": "loop_end",
+}
 
 REGION = {
     "header": "region",
@@ -44,11 +49,6 @@ REGION = {
         "pitch_keycenter",
         "octave_offset",
     ],
-    "rename_opcode_aliases": {
-        "loopmode": "loop_mode",
-        "loopstart": "loop_start",
-        "loopend": "loop_end",
-    },
 }
 
 GROUP = {
@@ -63,7 +63,6 @@ GROUP = {
         "lovel",
         "hivel",
     ],
-    "rename_opcode_aliases": {},
 }
 
 GLOBAL = {
@@ -72,7 +71,6 @@ GLOBAL = {
     "obsidian_tag": OSCILLATOR_GROUP["tag"],
     "obsidian_opcode_rename": {},
     "obsidian_opcode_remove": [],
-    "rename_opcode_aliases": {},
 }
 
 CONTROL = {
@@ -81,7 +79,6 @@ CONTROL = {
     "obsidian_tag": VOICE["tag"],
     "obsidian_opcode_rename": {},
     "obsidian_opcode_remove": [],
-    "rename_opcode_aliases": {},
 }
 
 SFZ = [REGION, GROUP, GLOBAL, CONTROL]
