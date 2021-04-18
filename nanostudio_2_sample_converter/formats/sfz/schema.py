@@ -4,38 +4,53 @@ from nanostudio_2_sample_converter.formats.nanostudio_2.obsidian.schema import (
     VOICE,
 )
 
-KEY_OPCODES = ["key", "lokey", "hikey", "pitch_keycenter"]
+KEY = "key"
+LO_KEY = "lokey"
+HI_KEY = "hikey"
+PITCH_KEYCENTER = "pitch_keycenter"
+TRANSPOSE = "transpose"
+NOTE_OFFSET = "note_offset"
+OCTAVE_OFFSET = "octave_offset"
+DEFAULT_PATH = "default_path"
+SAMPLE = "sample"
+
+KEY_OPCODES = [KEY, LO_KEY, HI_KEY, PITCH_KEYCENTER]
+TRANSPOSE_OPCODES = [TRANSPOSE, NOTE_OFFSET, OCTAVE_OFFSET]
+
 RENAME_OPCODE_ALIASES = {
     "loopmode": "loop_mode",
     "loopstart": "loop_start",
     "loopend": "loop_end",
+    "pitch": "tune",
 }
 
 REGION = {
     "header": "region",
     "obsidian_tag": SAMPLER_ZONE["tag"],
     "obsidian_opcode_rename": {
-        "pitch_keycenter": "root_key",
-        "lokey": "minimum_key",
-        "hikey": "maximum_key",
+        PITCH_KEYCENTER: "root_key",
+        LO_KEY: "minimum_key",
+        HI_KEY: "maximum_key",
         "direction": "playback_direction",
-        "sample": "file_name",
+        SAMPLE: "file_name",
     },
     "obsidian_opcode_remove": [
-        "key",
-        "transpose",
-        "default_path",
+        KEY,
+        TRANSPOSE,
+        OCTAVE_OFFSET,
+        NOTE_OFFSET,
+        DEFAULT_PATH,
         "offset",
         "end",
-        "octave_offset",
+        "loop_start",
+        "loop_end",
     ],
     "opcodes": [
-        "key",
-        "lokey",
-        "hikey",
-        "tune",
-        "transpose",
-        "default_path",
+        KEY,
+        LO_KEY,
+        HI_KEY,
+        TRANSPOSE,
+        DEFAULT_PATH,
         "direction",
         "offset",
         "end",
@@ -45,9 +60,10 @@ REGION = {
         "loopmode",
         "loopstart",
         "loopend",
-        "sample",
-        "pitch_keycenter",
-        "octave_offset",
+        SAMPLE,
+        PITCH_KEYCENTER,
+        OCTAVE_OFFSET,
+        NOTE_OFFSET,
     ],
 }
 
@@ -59,10 +75,7 @@ GROUP = {
         "lovel",
         "hivel",
     ],
-    "opcodes": [
-        "lovel",
-        "hivel",
-    ],
+    "opcodes": ["lovel", "hivel", "tune", "pitch"],
 }
 
 GLOBAL = {

@@ -10,7 +10,17 @@ from nanostudio_2_sample_converter.formats.sfz.schema import (
     OPCODES,
     HEADERS_XPATH,
     KEY_OPCODES,
+    TRANSPOSE_OPCODES,
     RENAME_OPCODE_ALIASES,
+    KEY,
+    LO_KEY,
+    HI_KEY,
+    PITCH_KEYCENTER,
+    TRANSPOSE,
+    NOTE_OFFSET,
+    OCTAVE_OFFSET,
+    DEFAULT_PATH,
+    SAMPLE,
 )
 
 
@@ -24,16 +34,16 @@ class Sfz:
         self.rename_opcode_aliases = RENAME_OPCODE_ALIASES
 
     @staticmethod
-    def remove_comment_filter(line):
+    def __remove_comment_filter(line):
         return not line.startswith("//")
 
     @staticmethod
-    def convert_list_to_string_single_space(line_list):
+    def __convert_list_to_string_single_space(line_list):
         line_string = " ".join(line_list)
         return " ".join(line_string.split())
 
     @staticmethod
-    def encapsulate_headers_as_xml_elements(sfz_string):
+    def __encapsulate_headers_as_xml_elements(sfz_string):
         sfz_list = sfz_string.split()
         sfz_range = [
             {"start": index}
@@ -57,86 +67,86 @@ class Sfz:
             block_sfz_list.append(" ".join(block_items) + "/>")
         return "".join(block_sfz_list)
 
-    def remove_unsupported_headers(self, sfz_xml):
+    def __remove_unsupported_headers(self, sfz_xml):
         for element in sfz_xml:
             if element.tag not in self.headers:
                 sfz_xml.remove(element)
 
     @staticmethod
-    def pop_xml_attributes(element, attribute_list):
+    def __pop_xml_attributes(element, attribute_list):
         for attribute in attribute_list:
             element.attrib.pop(attribute)
 
-    def remove_unsupported_opcodes(self, sfz_xml):
+    def __remove_unsupported_opcodes(self, sfz_xml):
         for element in sfz_xml:
-            invalid_opcodes = self.find_invalid_opcodes(element, self.opcodes)
-            self.pop_xml_attributes(element, invalid_opcodes)
+            invalid_opcodes = self.__find_invalid_opcodes(element, self.opcodes)
+            self.__pop_xml_attributes(element, invalid_opcodes)
 
-    def get_opcodes(self, tag):
+    def __get_opcodes(self, tag):
         return [header for header in self.schema if tag == header["header"]][0][
             "opcodes"
         ]
 
     @staticmethod
-    def find_invalid_opcodes(element, opcodes):
+    def __find_invalid_opcodes(element, opcodes):
         return {
             key: value for (key, value) in element.attrib.items() if key not in opcodes
         }
 
     @staticmethod
-    def find_valid_opcodes(element, opcodes):
+    def __find_valid_opcodes(element, opcodes):
         return {key: value for (key, value) in element.attrib.items() if key in opcodes}
 
     @staticmethod
-    def merge_dictionaries(dictionary_1, dictionary_2):
+    def __merge_dictionaries(dictionary_1, dictionary_2):
         return {**dictionary_1, **dictionary_2}
 
     @staticmethod
-    def update_xml_attributes(xml, attributes):
+    def __update_xml_attributes(xml, attributes):
         for (key, value) in attributes.items():
             xml.attrib[key] = value
 
-    def distribute_opcodes_down_to_correct_level(
+    def __distribute_opcodes_down_to_correct_level(
         self, sfz_xml, distribution_attributes
     ):
-        merged_attributes = self.merge_dictionaries(
+        merged_attributes = self.__merge_dictionaries(
             sfz_xml.attrib, distribution_attributes
         )
-        self.update_xml_attributes(sfz_xml, merged_attributes)
-        header_opcodes = self.get_opcodes(sfz_xml.tag)
-        invalid_header_opcodes = self.find_invalid_opcodes(sfz_xml, header_opcodes)
+        self.__update_xml_attributes(sfz_xml, merged_attributes)
+        header_opcodes = self.__get_opcodes(sfz_xml.tag)
+        invalid_header_opcodes = self.__find_invalid_opcodes(sfz_xml, header_opcodes)
         if len(sfz_xml):
-            invalid_opcodes = self.find_invalid_opcodes(sfz_xml, header_opcodes)
-            self.pop_xml_attributes(sfz_xml, invalid_opcodes)
+            invalid_opcodes = self.__find_invalid_opcodes(sfz_xml, header_opcodes)
+            self.__pop_xml_attributes(sfz_xml, invalid_opcodes)
             for child in sfz_xml:
-                self.distribute_opcodes_down_to_correct_level(
+                self.__distribute_opcodes_down_to_correct_level(
                     child, invalid_header_opcodes
                 )
 
-    def aggregate_opcodes_up_to_correct_level(self, sfz_xml):
+    def __aggregate_opcodes_up_to_correct_level(self, sfz_xml):
         for index, xpath in enumerate(self.headers_xpath):
             header = self.headers[index]
-            header_opcodes = self.get_opcodes(header)
+            header_opcodes = self.__get_opcodes(header)
             for element in sfz_xml.findall(xpath):
-                invalid_header_opcodes = self.find_invalid_opcodes(
+                invalid_header_opcodes = self.__find_invalid_opcodes(
                     element, header_opcodes
                 )
                 parent = element.getparent()
                 if parent:
-                    merged_attributes = self.merge_dictionaries(
+                    merged_attributes = self.__merge_dictionaries(
                         parent.attrib, invalid_header_opcodes
                     )
-                    self.update_xml_attributes(parent, merged_attributes)
-                invalid_opcodes = self.find_invalid_opcodes(element, header_opcodes)
-                self.pop_xml_attributes(element, invalid_opcodes)
+                    self.__update_xml_attributes(parent, merged_attributes)
+                invalid_opcodes = self.__find_invalid_opcodes(element, header_opcodes)
+                self.__pop_xml_attributes(element, invalid_opcodes)
 
     @staticmethod
-    def flatten_xml_child(xml, index):
+    def __flatten_xml_child(xml, index):
         for child in xml[index]:
             xml.append(child)
         xml.remove(xml[index])
 
-    def fill_missing_parent_headers(self, sfz_xml):
+    def __fill_missing_parent_headers(self, sfz_xml):
         for header in self.headers:
             header_count = sum(1 for _ in sfz_xml.iter(header))
             if not header_count:
@@ -146,7 +156,7 @@ class Sfz:
                     new_node.append(child)
                 sfz_xml.append(new_node)
 
-    def move_headers_into_hierachies(self, sfz_xml):
+    def __move_headers_into_hierachies(self, sfz_xml):
         for header in self.headers:
             parent_index = -1
             index_offset = 0
@@ -157,53 +167,102 @@ class Sfz:
                         index_offset = index_offset + 1
                 else:
                     parent_index = index - index_offset
-        self.fill_missing_parent_headers(sfz_xml)
+        self.__fill_missing_parent_headers(sfz_xml)
         return sfz_xml[0]  # drops "root" parent element
 
     @staticmethod
-    def convert_key_string_to_key_number(string):
+    def __convert_key_string_to_key_number(string):
         if string[0].isdigit():
             return string
         return key_name_to_key_number(string)
 
-    def convert_opcodes_key_string_to_key_number(self, sfz_xml):
+    def __convert_opcodes_key_string_to_key_number(self, sfz_xml):
         for header in HEADERS:
             for element in sfz_xml.iter(header):
-                key_opcodes = self.find_valid_opcodes(element, self.key_opcodes)
+                key_opcodes = self.__find_valid_opcodes(element, self.key_opcodes)
                 key_opcodes = {
-                    key: self.convert_key_string_to_key_number(value)
+                    key: self.__convert_key_string_to_key_number(value)
                     for (key, value) in key_opcodes.items()
                 }
-                self.update_xml_attributes(element, key_opcodes)
+                self.__update_xml_attributes(element, key_opcodes)
 
-    def consolidate_opcode_aliases(self, sfz_xml):
+    def __consolidate_opcode_aliases(self, sfz_xml):
         for header in HEADERS:
             for element in sfz_xml.iter(header):
-                old_name_opcodes = self.find_valid_opcodes(
+                old_name_opcodes = self.__find_valid_opcodes(
                     element, self.rename_opcode_aliases.keys()
                 )
                 new_name_opcodes = {
                     self.rename_opcode_aliases[key]: value
                     for (key, value) in old_name_opcodes.items()
                 }
-                self.update_xml_attributes(element, new_name_opcodes)
-                self.pop_xml_attributes(element, old_name_opcodes)
+                self.__update_xml_attributes(element, new_name_opcodes)
+                self.__pop_xml_attributes(element, old_name_opcodes)
+
+    def __convert_key_to_lo_hi_pitch_keycenter(self, sfz_xml):
+        for element in sfz_xml.iter():
+            key_opcodes = self.__find_valid_opcodes(element, KEY_OPCODES)
+            if key_opcodes:
+                if KEY in key_opcodes:
+                    key_value = key_opcodes[KEY]
+                    replacement_opcodes = {}
+                    if not LO_KEY in key_opcodes:
+                        replacement_opcodes[LO_KEY] = key_value
+                    if not HI_KEY in key_opcodes:
+                        replacement_opcodes[HI_KEY] = key_value
+                    if not PITCH_KEYCENTER in key_opcodes:
+                        replacement_opcodes[PITCH_KEYCENTER] = key_value
+                    self.__update_xml_attributes(element, replacement_opcodes)
+                    self.__pop_xml_attributes(element, {KEY: key_opcodes[KEY]})
+
+    def __apply_transpose_to_pitch_keys(self, sfz_xml):
+        for element in sfz_xml.iter():
+            transpose_opcodes = self.__find_valid_opcodes(element, TRANSPOSE_OPCODES)
+            key_opcodes = self.__find_valid_opcodes(element, KEY)
+            if transpose_opcodes and key_opcodes:
+                transpose_amount = 0
+                if transpose_opcodes[OCTAVE_OFFSET]:
+                    transpose_amount = transpose_opcodes[OCTAVE_OFFSET] * 12
+                if transpose_opcodes[NOTE_OFFSET]:
+                    transpose_amount += transpose_opcodes[NOTE_OFFSET]
+                if transpose_opcodes[TRANSPOSE]:
+                    transpose_amount += transpose_opcodes[TRANSPOSE]
+                key_opcodes = {
+                    key: value + transpose_amount
+                    for (key, value) in key_opcodes.items()
+                }
+            self.__update_xml_attributes(element, key_opcodes)
+            self.__pop_xml_attributes(element, transpose_opcodes)
+
+    def __append_default_path_to_sample_opcodes(self, sfz_xml):
+        for element in sfz_xml.iter():
+            sample_opcode = self.__find_valid_opcodes(element, [SAMPLE])
+            default_path_opcode = self.__find_valid_opcodes(element, [DEFAULT_PATH])
+            if sample_opcode and default_path_opcode:
+                sample = {
+                    SAMPLE: default_path_opcode[DEFAULT_PATH] + sample_opcode[SAMPLE]
+                }
+                self.__update_xml_attributes(element, sample)
+                self.__pop_xml_attributes(element, default_path_opcode)
 
     def sfz_to_xml(self, sfz_file_path):
         with open(sfz_file_path, "r") as reader:
             sfz_lines = reader.readlines()
-        sfz_string = Sfz.convert_list_to_string_single_space(
-            list(filter(Sfz.remove_comment_filter, sfz_lines))
+        sfz_string = Sfz.__convert_list_to_string_single_space(
+            list(filter(Sfz.__remove_comment_filter, sfz_lines))
         )
         sfz_string = (
-            "<root>" + Sfz.encapsulate_headers_as_xml_elements(sfz_string) + "</root>"
+            "<root>" + Sfz.__encapsulate_headers_as_xml_elements(sfz_string) + "</root>"
         )
         sfz_xml = ET.fromstring(sfz_string)
-        self.remove_unsupported_headers(sfz_xml)
-        self.remove_unsupported_opcodes(sfz_xml)
-        self.convert_opcodes_key_string_to_key_number(sfz_xml)
-        self.consolidate_opcode_aliases(sfz_xml)
-        sfz_xml = self.move_headers_into_hierachies(sfz_xml)
-        self.distribute_opcodes_down_to_correct_level(sfz_xml, {})
-        self.aggregate_opcodes_up_to_correct_level(sfz_xml)
+        self.__remove_unsupported_headers(sfz_xml)
+        self.__remove_unsupported_opcodes(sfz_xml)
+        self.__convert_opcodes_key_string_to_key_number(sfz_xml)
+        self.__consolidate_opcode_aliases(sfz_xml)
+        self.__convert_key_to_lo_hi_pitch_keycenter(sfz_xml)
+        sfz_xml = self.__move_headers_into_hierachies(sfz_xml)
+        self.__distribute_opcodes_down_to_correct_level(sfz_xml, {})
+        self.__aggregate_opcodes_up_to_correct_level(sfz_xml)
+        self.__apply_transpose_to_pitch_keys(sfz_xml)
+        self.__append_default_path_to_sample_opcodes(sfz_xml)
         return sfz_xml
