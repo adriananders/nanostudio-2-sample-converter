@@ -1,2 +1,5 @@
 lxml == 4.6.3
 pretty_midi == 0.2.9
+wavchunk == 1.0.1
+wave-chunk-parser == 1.0.4
+pydub == 0.25.1

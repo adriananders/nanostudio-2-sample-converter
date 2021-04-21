@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
+import pytest
 from nanostudio_2_sample_converter.formats.sfz.sfz import (
     Sfz,
 )
@@ -22,3 +23,6 @@ class TestSfz:
             sfz_xml_string = ET.tostring(sfz_xml).decode("utf-8")
             sfz_xml_pretty = xml.dom.minidom.parseString(sfz_xml_string).toprettyxml()
             assert sample_xml_pretty == sfz_xml_pretty
+
+
+pytest.main()
