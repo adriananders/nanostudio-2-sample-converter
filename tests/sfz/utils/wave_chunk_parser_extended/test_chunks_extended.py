@@ -1,8 +1,8 @@
 # pylint: disable=too-many-instance-attributes, too-many-arguments
+from unittest import TestCase
+import os
 from typing import List
 from parameterized import parameterized
-import pytest
-from pytest import raises
 import numpy as np
 from wave_chunk_parser.exceptions import (
     InvalidHeaderException,
@@ -17,12 +17,14 @@ from nanostudio_2_sample_converter.formats.sfz.utils.wave_chunk_parser_extended.
     RiffChunkExtended,
 )
 
+DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
-class TestSampleChunk:
+
+class TestSampleChunk(TestCase):
     @parameterized.expand(
         [
             (
-                "./files/tone.wav",
+                os.path.join(DIR_PATH, "./files/tone.wav"),
                 75216,
                 0,
                 0,
@@ -76,28 +78,32 @@ class TestSampleChunk:
 
             # Assert
 
-            assert chunk is not None
-            assert chunk.get_name == b"smpl"
-            assert chunk.manufacturer == expected_manufacturer
-            assert chunk.product == expected_product
-            assert chunk.sample_period == expected_sample_period
-            assert chunk.midi_unity_note == expected_midi_unity_note
-            assert chunk.midi_pitch_fraction == expected_midi_pitch_fraction
-            assert chunk.smpte_format == expected_smpte_format
-            assert chunk.smpte_offset == expected_smpte_offset
-            assert chunk.number_of_sample_loops == expected_number_of_sample_loops
-            assert chunk.sampler_data == expected_sampler_data
-            assert chunk.first_cue_point_id == expected_first_cue_point_id
-            assert chunk.first_loop_type == expected_first_loop_type
-            assert chunk.first_loop_start == expected_first_loop_start
-            assert chunk.first_loop_end == expected_first_loop_end
-            assert chunk.first_loop_fraction == expected_first_loop_fraction
-            assert chunk.first_loop_play_count == expected_first_loop_play_count
+            self.assertIsNotNone(chunk)
+            self.assertEqual(chunk.get_name, b"smpl")
+            self.assertEqual(chunk.manufacturer, expected_manufacturer)
+            self.assertEqual(chunk.product, expected_product)
+            self.assertEqual(chunk.sample_period, expected_sample_period)
+            self.assertEqual(chunk.midi_unity_note, expected_midi_unity_note)
+            self.assertEqual(chunk.midi_pitch_fraction, expected_midi_pitch_fraction)
+            self.assertEqual(chunk.smpte_format, expected_smpte_format)
+            self.assertEqual(chunk.smpte_offset, expected_smpte_offset)
+            self.assertEqual(
+                chunk.number_of_sample_loops, expected_number_of_sample_loops
+            )
+            self.assertEqual(chunk.sampler_data, expected_sampler_data)
+            self.assertEqual(chunk.first_cue_point_id, expected_first_cue_point_id)
+            self.assertEqual(chunk.first_loop_type, expected_first_loop_type)
+            self.assertEqual(chunk.first_loop_start, expected_first_loop_start)
+            self.assertEqual(chunk.first_loop_end, expected_first_loop_end)
+            self.assertEqual(chunk.first_loop_fraction, expected_first_loop_fraction)
+            self.assertEqual(
+                chunk.first_loop_play_count, expected_first_loop_play_count
+            )
 
     @parameterized.expand(
         [
             (
-                "./files/tone.wav",
+                os.path.join(DIR_PATH, "./files/tone.wav"),
                 36,
             )
         ]
@@ -113,12 +119,12 @@ class TestSampleChunk:
 
             # Act
 
-            with raises(InvalidHeaderException) as context:
+            with self.assertRaises(InvalidHeaderException) as context:
                 SampleChunk.from_file(file, chunk_offset)
 
                 # Assert
 
-                assert context.exception in "Sample chunk must start with fmt"
+                self.assertIn("Sample chunk must start with fmt", context.exception)
 
     @parameterized.expand(
         [
@@ -194,13 +200,13 @@ class TestSampleChunk:
 
         # Assert
 
-        assert converted == expected_bytes
+        self.assertEqual(converted, expected_bytes)
 
 
-class TestRiffChunkExtended:
+class TestRiffChunkExtended(TestCase):
     @parameterized.expand(
         [
-            ("./files/tone.wav", [b"fmt ", b"data", b"smpl"]),
+            (os.path.join(DIR_PATH, "./files/tone.wav"), [b"fmt ", b"data", b"smpl"]),
         ]
     )
     def test_read_valid_wave(self, file_name: str, expected_chunks: List[str]):
@@ -218,11 +224,11 @@ class TestRiffChunkExtended:
 
             # Assert
 
-            assert chunk is not None
-            assert chunk.get_name == b"WAVE"
-            assert chunk.sub_chunks is not None
+            self.assertIsNotNone(chunk)
+            self.assertEqual(chunk.get_name, b"WAVE")
+            self.assertIsNotNone(chunk.sub_chunks)
             for expected_chunk in expected_chunks:
-                assert expected_chunk in chunk.sub_chunks
+                self.assertIn(expected_chunk, chunk.sub_chunks)
 
     def test_encode_wave(self):
         """
@@ -255,7 +261,7 @@ class TestRiffChunkExtended:
             0,
         )
 
-        with open("./files/tone.wav", "rb") as in_file:
+        with open(os.path.join(DIR_PATH, "./files/tone.wav"), "rb") as in_file:
             samples = np.memmap(
                 in_file, dtype=np.dtype("<i2"), mode="c", shape=(37586, 1), offset=44
             )
@@ -264,7 +270,7 @@ class TestRiffChunkExtended:
 
         riff = RiffChunkExtended(chunks)
 
-        with open("./files/tone.wav", "rb") as expected_file:
+        with open(os.path.join(DIR_PATH, "./files/tone.wav"), "rb") as expected_file:
             expected_blob = expected_file.read()
 
         #  Act
@@ -273,8 +279,5 @@ class TestRiffChunkExtended:
 
         # Assert
 
-        assert blob is not None
-        assert blob == expected_blob
-
-
-pytest.main()
+        self.assertIsNotNone(blob)
+        self.assertEqual(blob, expected_blob)

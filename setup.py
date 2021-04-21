@@ -76,8 +76,6 @@ class BuildPyCommand(setuptools.command.build_py.build_py):
     """Custom build command."""
 
     def run(self):
-        self.run_command("black")
-        self.run_command("pylint")
         setuptools.command.build_py.build_py.run(self)
 
 
@@ -103,6 +101,7 @@ setup(
         "install": InstallPyCommand,
         "pylint": PylintCommand,
     },
+    test_suite="tests",
     url="https://github.com/adriananders/nanostudio-2-sample-converter",
     license="MIT",
     author="Adrian Anders",
