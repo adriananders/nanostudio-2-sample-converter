@@ -99,7 +99,7 @@ class SampleChunk(Chunk):
         (header_str, length) = cls.read_header(file_handle, offset)
 
         if not header_str == cls.HEADER_SAMPLE:
-            raise InvalidHeaderException("Sampler chunk must start with smpl")
+            raise InvalidHeaderException("Sample chunk must start with smpl")
 
         # Read from the chunk
 

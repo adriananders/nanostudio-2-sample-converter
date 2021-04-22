@@ -122,9 +122,10 @@ class TestSampleChunk(TestCase):
             with self.assertRaises(InvalidHeaderException) as context:
                 SampleChunk.from_file(file, chunk_offset)
 
-                # Assert
-
-                self.assertIn("Sample chunk must start with fmt", context.exception)
+            # Assert
+            self.assertIn(
+                "Sample chunk must start with smpl", context.exception.args[0]
+            )
 
     @parameterized.expand(
         [

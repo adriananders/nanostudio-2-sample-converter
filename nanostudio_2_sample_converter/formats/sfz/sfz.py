@@ -1,7 +1,10 @@
 """
-Obsidian patch functions
+Sfz conversion functions
 Note: schema taken from sfzformat.com
 """
+# pylint: disable=too-many-instance-attributes
+import os
+from pathlib import Path
 from lxml import etree as ET
 from pretty_midi.utilities import key_name_to_key_number
 from nanostudio_2_sample_converter.formats.sfz.schema import (
@@ -22,16 +25,44 @@ from nanostudio_2_sample_converter.formats.sfz.schema import (
     DEFAULT_PATH,
     SAMPLE,
 )
+from nanostudio_2_sample_converter.formats.sfz.exceptions import (
+    SfzDestinationException,
+    SfzUserCancelOperation,
+    SfzDoesNotExistException,
+)
 
 
 class Sfz:
-    def __init__(self):
+    def __init__(self, sfz_file_path, destination_directory):
+        if not os.path.exists(sfz_file_path):
+            raise SfzDoesNotExistException(f"{sfz_file_path} does not exist.")
+        if not destination_directory:
+            raise SfzDestinationException(
+                "Destination directory path must be specified."
+            )
+        if (
+            Path(sfz_file_path).parent.absolute()
+            == Path(destination_directory).absolute()
+        ):
+            raise SfzDestinationException(
+                f"Destination {destination_directory} must be different than the SFZ's path."
+            )
+        if os.path.exists(destination_directory):
+            question = "Specified destination directory already exists. Do you wish to continue? (y/n)"
+            self.__input_yes_no_binary_choice(
+                question, self.__pass, self.__raise_user_cancel
+            )
+        else:
+            self.__create_destination_directory()
+        self.sfz_file_path = sfz_file_path
+        self.destination_directory = destination_directory
         self.schema = SFZ
         self.headers = HEADERS
         self.headers_xpath = HEADERS_XPATH
         self.opcodes = OPCODES
         self.key_opcodes = KEY_OPCODES
         self.rename_opcode_aliases = RENAME_OPCODE_ALIASES
+        self.sfz_xml = self.__sfz_to_xml()
 
     @staticmethod
     def __remove_comment_filter(line):
@@ -245,8 +276,8 @@ class Sfz:
                 self.__update_xml_attributes(element, sample)
                 self.__pop_xml_attributes(element, default_path_opcode)
 
-    def sfz_to_xml(self, sfz_file_path):
-        with open(sfz_file_path, "r") as reader:
+    def __sfz_to_xml(self):
+        with open(self.sfz_file_path, "r") as reader:
             sfz_lines = reader.readlines()
         sfz_string = Sfz.__convert_list_to_string_single_space(
             list(filter(Sfz.__remove_comment_filter, sfz_lines))
@@ -266,3 +297,24 @@ class Sfz:
         self.__apply_transpose_to_pitch_keys(sfz_xml)
         self.__append_default_path_to_sample_opcodes(sfz_xml)
         return sfz_xml
+
+    def __input_yes_no_binary_choice(self, input_question, yes_response, no_response):
+        print(input_question)
+        response = input()
+        if response.lower() == "y":
+            yes_response()
+        elif response.lower() == "n":
+            no_response()
+        else:
+            self.__input_yes_no_binary_choice(
+                "Input not recognized, please try again", yes_response, no_response
+            )
+
+    def __raise_user_cancel(self):
+        raise SfzUserCancelOperation("SFZ conversion operation cancelled.")
+
+    def __pass(self):
+        pass
+
+    def __create_destination_directory(self):
+        os.makedirs(self.destination_directory)
