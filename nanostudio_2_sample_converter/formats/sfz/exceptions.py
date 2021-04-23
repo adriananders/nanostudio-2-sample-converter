@@ -21,3 +21,19 @@ class SfzDoesNotExistException(Exception):
     """
 
     pass
+
+
+class AudioFileDoesNotExistException(Exception):
+    """
+    Indicates the audio file specified does not exist.
+    """
+
+    pass
+
+
+class FfmpegNotInstalledException(Exception):
+    """
+    Indicates that ffmpeg is not installed.
+    """
+
+    pass

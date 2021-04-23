@@ -1,0 +1,41 @@
+//=============================================================
+// MF Taiko Drum V.1.0
+// Author: Markus Fiedler in the year 2012
+// Published on www.terzmagazin.de
+// Contact: mfiedler [at] fiedler-audio [dot] de
+//
+// Samples Used from http://www.freesound.org/people/whatsanickname4u/sounds/95624/
+// License for used Samples: Attribution 3.0 Unported (CC BY 3.0)
+//
+//
+//==============================================================
+
+
+<group>
+transpose=3
+tune=-35
+ampeg_release=100
+
+<region>
+sample=samples\mf-taiko-v1.ogg
+hivel=60
+
+<region>
+sample=samples\mf-taiko-v2.ogg
+lovel=61
+hivel=80
+offset=10000
+end=90000
+loop_start=40000
+loop_end=50000
+
+<region>
+sample=samples\mf-taiko-v3.ogg
+lovel=81
+hivel=109
+loop_start=40000
+loop_end=50000
+
+<region>
+sample=samples\mf-taiko-v4.ogg
+lovel=110

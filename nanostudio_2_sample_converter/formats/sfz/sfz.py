@@ -2,8 +2,8 @@
 Sfz conversion functions
 Note: schema taken from sfzformat.com
 """
-# pylint: disable=too-many-instance-attributes
 import os
+import shutil
 from pathlib import Path
 from lxml import etree as ET
 from pretty_midi.utilities import key_name_to_key_number
@@ -24,45 +24,47 @@ from nanostudio_2_sample_converter.formats.sfz.schema import (
     OCTAVE_OFFSET,
     DEFAULT_PATH,
     SAMPLE,
+    OFFSET,
+    END,
+    LOOP_START,
+    LOOP_END,
+    SAMPLE_EDIT_OPCODES,
 )
 from nanostudio_2_sample_converter.formats.sfz.exceptions import (
     SfzDestinationException,
     SfzUserCancelOperation,
     SfzDoesNotExistException,
+    AudioFileDoesNotExistException,
+)
+from nanostudio_2_sample_converter.formats.sfz.utils.audio import (
+    Audio,
+    add_loop_to_audio_data,
+    write_audio_file,
 )
 
 
 class Sfz:
-    def __init__(self, sfz_file_path, destination_directory):
-        if not os.path.exists(sfz_file_path):
+    def __init__(self, sfz_file_path, destination_directory, extension="obs"):
+        self.sfz_file_path = sfz_file_path
+        if not os.path.exists(self.sfz_file_path):
             raise SfzDoesNotExistException(f"{sfz_file_path} does not exist.")
+        self.sfz_parent_path = Path(sfz_file_path).parent.absolute()
+        self.patch_name = (
+            ".".join(os.path.basename(self.sfz_file_path).split(".")[:-1])
+            + f".{extension}"
+        )
         if not destination_directory:
             raise SfzDestinationException(
                 "Destination directory path must be specified."
             )
-        if (
-            Path(sfz_file_path).parent.absolute()
-            == Path(destination_directory).absolute()
-        ):
-            raise SfzDestinationException(
-                f"Destination {destination_directory} must be different than the SFZ's path."
-            )
-        if os.path.exists(destination_directory):
-            question = "Specified destination directory already exists. Do you wish to continue? (y/n)"
-            self.__input_yes_no_binary_choice(
-                question, self.__pass, self.__raise_user_cancel
-            )
-        else:
-            self.__create_destination_directory()
-        self.sfz_file_path = sfz_file_path
-        self.destination_directory = destination_directory
-        self.schema = SFZ
-        self.headers = HEADERS
-        self.headers_xpath = HEADERS_XPATH
-        self.opcodes = OPCODES
-        self.key_opcodes = KEY_OPCODES
-        self.rename_opcode_aliases = RENAME_OPCODE_ALIASES
+        self.destination_directory = os.path.join(
+            destination_directory, self.patch_name
+        )
+        self.__create_destination_directory()
         self.sfz_xml = self.__sfz_to_xml()
+        self.__copy_audio_files()
+        self.__convert_audio_files_to_ns_audio_files()
+        self.__update_sample_to_basename()
 
     @staticmethod
     def __remove_comment_filter(line):
@@ -98,9 +100,10 @@ class Sfz:
             block_sfz_list.append(" ".join(block_items) + "/>")
         return "".join(block_sfz_list)
 
-    def __remove_unsupported_headers(self, sfz_xml):
+    @staticmethod
+    def __remove_unsupported_headers(sfz_xml):
         for element in sfz_xml:
-            if element.tag not in self.headers:
+            if element.tag not in HEADERS:
                 sfz_xml.remove(element)
 
     @staticmethod
@@ -110,13 +113,11 @@ class Sfz:
 
     def __remove_unsupported_opcodes(self, sfz_xml):
         for element in sfz_xml:
-            invalid_opcodes = self.__find_invalid_opcodes(element, self.opcodes)
+            invalid_opcodes = self.__find_invalid_opcodes(element, OPCODES)
             self.__pop_xml_attributes(element, invalid_opcodes)
 
     def __get_opcodes(self, tag):
-        return [header for header in self.schema if tag == header["header"]][0][
-            "opcodes"
-        ]
+        return [header for header in SFZ if tag == header["header"]][0]["opcodes"]
 
     @staticmethod
     def __find_invalid_opcodes(element, opcodes):
@@ -155,8 +156,8 @@ class Sfz:
                 )
 
     def __aggregate_opcodes_up_to_correct_level(self, sfz_xml):
-        for index, xpath in enumerate(self.headers_xpath):
-            header = self.headers[index]
+        for index, xpath in enumerate(HEADERS_XPATH):
+            header = HEADERS[index]
             header_opcodes = self.__get_opcodes(header)
             for element in sfz_xml.findall(xpath):
                 invalid_header_opcodes = self.__find_invalid_opcodes(
@@ -177,8 +178,9 @@ class Sfz:
             xml.append(child)
         xml.remove(xml[index])
 
-    def __fill_missing_parent_headers(self, sfz_xml):
-        for header in self.headers:
+    @staticmethod
+    def __fill_missing_parent_headers(sfz_xml):
+        for header in HEADERS:
             header_count = sum(1 for _ in sfz_xml.iter(header))
             if not header_count:
                 new_node = ET.Element(header)
@@ -188,7 +190,7 @@ class Sfz:
                 sfz_xml.append(new_node)
 
     def __move_headers_into_hierachies(self, sfz_xml):
-        for header in self.headers:
+        for header in HEADERS:
             parent_index = -1
             index_offset = 0
             for index, elem in enumerate(sfz_xml):
@@ -210,7 +212,7 @@ class Sfz:
     def __convert_opcodes_key_string_to_key_number(self, sfz_xml):
         for header in HEADERS:
             for element in sfz_xml.iter(header):
-                key_opcodes = self.__find_valid_opcodes(element, self.key_opcodes)
+                key_opcodes = self.__find_valid_opcodes(element, KEY_OPCODES)
                 key_opcodes = {
                     key: self.__convert_key_string_to_key_number(value)
                     for (key, value) in key_opcodes.items()
@@ -221,10 +223,10 @@ class Sfz:
         for header in HEADERS:
             for element in sfz_xml.iter(header):
                 old_name_opcodes = self.__find_valid_opcodes(
-                    element, self.rename_opcode_aliases.keys()
+                    element, RENAME_OPCODE_ALIASES.keys()
                 )
                 new_name_opcodes = {
-                    self.rename_opcode_aliases[key]: value
+                    RENAME_OPCODE_ALIASES[key]: value
                     for (key, value) in old_name_opcodes.items()
                 }
                 self.__update_xml_attributes(element, new_name_opcodes)
@@ -276,6 +278,100 @@ class Sfz:
                 self.__update_xml_attributes(element, sample)
                 self.__pop_xml_attributes(element, default_path_opcode)
 
+    def __input_yes_no_binary_choice(self, input_question, yes_response, no_response):
+        print(input_question)
+        response = input()
+        if response.lower() == "y":
+            yes_response()
+        elif response.lower() == "n":
+            no_response()
+        else:
+            self.__input_yes_no_binary_choice(
+                "Input not recognized, please try again", yes_response, no_response
+            )
+
+    def __raise_user_cancel(self):
+        raise SfzUserCancelOperation("SFZ conversion operation cancelled.")
+
+    def __pass(self):
+        pass
+
+    def __create_destination_directory(self):
+        os.makedirs(self.destination_directory)
+
+    def __copy_audio_files(self):
+        for element in self.sfz_xml.iter():
+            sample_opcode = self.__find_valid_opcodes(element, [SAMPLE])
+            if sample_opcode:
+                sample_path = sample_opcode[SAMPLE].replace("\\", "/")
+                if not os.path.exists(sample_path):
+                    sample_path = os.path.join(self.sfz_parent_path, sample_path)
+                    if not os.path.exists(sample_path):
+                        raise AudioFileDoesNotExistException(
+                            f"{sample_path} does not exist."
+                        )
+                file_name = os.path.basename(sample_path)
+                destination_file = os.path.join(self.destination_directory, file_name)
+                print(f"Copying {sample_path} to {destination_file}")
+                if os.path.exists(destination_file):
+                    question = f"{destination_file} already exists. Do you wish to overwrite? (y/n)"
+                    self.__input_yes_no_binary_choice(
+                        question, self.__pass, self.__raise_user_cancel
+                    )
+                shutil.copyfile(sample_path, destination_file)
+                sample_opcode[SAMPLE] = destination_file
+                self.__update_xml_attributes(element, sample_opcode)
+
+    def __convert_audio_files_to_ns_audio_files(self):
+        for element in self.sfz_xml.iter():
+            sample_opcode = self.__find_valid_opcodes(element, [SAMPLE])
+            edit_opcodes = self.__find_valid_opcodes(element, SAMPLE_EDIT_OPCODES)
+            if sample_opcode:
+                file_path = sample_opcode[SAMPLE]
+                extension = file_path.split(".")[-1]
+                if extension.lower() != "wav" and (
+                    LOOP_START in edit_opcodes.keys() or LOOP_END in edit_opcodes.keys()
+                ):
+                    print(f"Converting {file_path} to wav to handle loop editing")
+                    destination = ".".join(file_path.split(".")[:-1]) + ".wav"
+                    Audio(file_path).export(destination)
+                    os.remove(file_path)
+                    file_path = destination
+                    sample_opcode[SAMPLE] = file_path
+                offset = None
+                end = None
+                if OFFSET in edit_opcodes.keys():
+                    offset = int(edit_opcodes[OFFSET])
+                if END in edit_opcodes.keys():
+                    end = int(edit_opcodes[END])
+                if offset or end:
+                    audio = Audio(file_path)
+                    audio.crop_audio(offset, end)
+                    audio.export(file_path)
+                if LOOP_START in edit_opcodes.keys() or LOOP_END in edit_opcodes.keys():
+                    loop_start = (
+                        int(edit_opcodes[LOOP_START]) - offset
+                        if offset
+                        else int(edit_opcodes[LOOP_START])
+                    )
+                    loop_end = (
+                        int(edit_opcodes[LOOP_END]) - offset
+                        if offset
+                        else int(edit_opcodes[LOOP_END])
+                    )
+                    with open(file_path, "rb") as file:
+                        data = add_loop_to_audio_data(file, loop_start, loop_end)
+                    write_audio_file(data, file_path)
+                self.__update_xml_attributes(element, sample_opcode)
+                self.__pop_xml_attributes(element, edit_opcodes)
+
+    def __update_sample_to_basename(self):
+        for element in self.sfz_xml.iter():
+            sample_opcode = self.__find_valid_opcodes(element, [SAMPLE])
+            if sample_opcode:
+                sample_opcode[SAMPLE] = os.path.basename(sample_opcode[SAMPLE])
+                self.__update_xml_attributes(element, sample_opcode)
+
     def __sfz_to_xml(self):
         with open(self.sfz_file_path, "r") as reader:
             sfz_lines = reader.readlines()
@@ -297,24 +393,3 @@ class Sfz:
         self.__apply_transpose_to_pitch_keys(sfz_xml)
         self.__append_default_path_to_sample_opcodes(sfz_xml)
         return sfz_xml
-
-    def __input_yes_no_binary_choice(self, input_question, yes_response, no_response):
-        print(input_question)
-        response = input()
-        if response.lower() == "y":
-            yes_response()
-        elif response.lower() == "n":
-            no_response()
-        else:
-            self.__input_yes_no_binary_choice(
-                "Input not recognized, please try again", yes_response, no_response
-            )
-
-    def __raise_user_cancel(self):
-        raise SfzUserCancelOperation("SFZ conversion operation cancelled.")
-
-    def __pass(self):
-        pass
-
-    def __create_destination_directory(self):
-        os.makedirs(self.destination_directory)

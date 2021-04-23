@@ -6,7 +6,7 @@ SFZ_PATH = "sfz/"
 XML_PATH = "sfz_xml/"
 SFZ_FILE = ".sfz"
 XML_FILE = ".xml"
-EXAMPLE_FILES = ["example_1"]
+EXAMPLE_FILES = ["example_1", "example_2"]
 EXAMPLES = [
     {
         "sfz": f"{BASE_PATH}{EXAMPLES_PATH}{SFZ_PATH}{file}{SFZ_FILE}",

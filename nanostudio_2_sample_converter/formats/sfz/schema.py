@@ -13,14 +13,19 @@ NOTE_OFFSET = "note_offset"
 OCTAVE_OFFSET = "octave_offset"
 DEFAULT_PATH = "default_path"
 SAMPLE = "sample"
+OFFSET = "offset"
+END = "end"
+LOOP_START = "loop_start"
+LOOP_END = "loop_end"
 
 KEY_OPCODES = [KEY, LO_KEY, HI_KEY, PITCH_KEYCENTER]
 TRANSPOSE_OPCODES = [TRANSPOSE, NOTE_OFFSET, OCTAVE_OFFSET]
+SAMPLE_EDIT_OPCODES = [OFFSET, END, LOOP_START, LOOP_END]
 
 RENAME_OPCODE_ALIASES = {
     "loopmode": "loop_mode",
-    "loopstart": "loop_start",
-    "loopend": "loop_end",
+    "loopstart": LOOP_START,
+    "loopend": LOOP_END,
     "pitch": "tune",
 }
 
@@ -40,10 +45,10 @@ REGION = {
         OCTAVE_OFFSET,
         NOTE_OFFSET,
         DEFAULT_PATH,
-        "offset",
-        "end",
-        "loop_start",
-        "loop_end",
+        OFFSET,
+        END,
+        LOOP_START,
+        LOOP_END,
     ],
     "opcodes": [
         KEY,
@@ -52,11 +57,11 @@ REGION = {
         TRANSPOSE,
         DEFAULT_PATH,
         "direction",
-        "offset",
-        "end",
+        OFFSET,
+        END,
         "loop_mode",
-        "loop_start",
-        "loop_end",
+        LOOP_START,
+        LOOP_END,
         "loopmode",
         "loopstart",
         "loopend",

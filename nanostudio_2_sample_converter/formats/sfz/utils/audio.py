@@ -1,7 +1,11 @@
+# pylint: disable=protected-access
 from pydub.audio_segment import AudioSegment
 from nanostudio_2_sample_converter.formats.sfz.utils.wave_chunk_parser_extended.chunks_extended import (
     RiffChunkExtended,
     SampleChunk,
+)
+from nanostudio_2_sample_converter.formats.sfz.exceptions import (
+    FfmpegNotInstalledException,
 )
 
 MANUFACTURER_ID = 0
@@ -21,16 +25,25 @@ LOOP_PLAY_COUNT = 0
 class Audio:
     def __init__(self, path):
         self.path = path
-        self.audio = AudioSegment.from_file(path, path[3:])
+        self.format = path.split(".")[-1]
+        try:
+            self.audio = AudioSegment.from_file(path, self.format)
+        except FileNotFoundError as exception:
+            if exception.filename == "ffprobe":
+                raise FfmpegNotInstalledException(
+                    "ffmpeg or libav is required to read audio from non-wave files. "
+                    "Please download and install from ffmpeg.org or libav.org then try again."
+                ) from exception
         self.sample_rate = self.audio.frame_rate
 
     def crop_audio(self, start=0, end=None):
-        start_ms = start / self.sample_rate
-        end_ms = end / self.sample_rate
-        return self.audio[start_ms:end_ms]
+        samples = self.audio.get_array_of_samples()
+        samples = samples[start:end]
+        self.audio = self.audio._spawn(samples)
 
     def export(self, destination):
-        self.audio.export(destination, format="wav")
+        destination_format = destination.split(".")[-1]
+        self.audio.export(destination, format=destination_format)
 
 
 def add_loop_to_audio_data(file, loop_start, loop_end):
@@ -62,11 +75,6 @@ def add_loop_to_audio_data(file, loop_start, loop_end):
         RiffChunkExtended.CHUNK_SAMPLE: sample_chunk,
     }
     return RiffChunkExtended(chunks).to_bytes()
-
-
-def open_audio_file(file_path):
-    with open(file_path, "rb") as file:
-        return file
 
 
 def write_audio_file(data, file_path):
