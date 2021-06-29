@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <control>
 	<global>
-		<group tune="-35" hivel="109" lovel="110">
+		<group tune="-35" hivel="127" lovel="0">
 			<region sample="samples\mf-taiko-v1.ogg"/>
 			<region sample="samples\mf-taiko-v2.ogg" offset="10000" end="90000" loop_start="40000" loop_end="50000"/>
 			<region sample="samples\mf-taiko-v3.ogg" loop_start="40000" loop_end="50000"/>

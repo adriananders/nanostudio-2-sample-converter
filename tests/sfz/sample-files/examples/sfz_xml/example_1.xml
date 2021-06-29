@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <control>
 	<global>
-		<group hivel="54" tune="-15">
+		<group hivel="54" tune="-15" lovel="0">
 			<region sample="XYZD2\ABC_21.wav" hikey="22" lokey="21" pitch_keycenter="21"/>
 			<region sample="XYZD2\ABC_25.wav" lokey="23" hikey="26" pitch_keycenter="25"/>
 			<region sample="XYZD2\ABC_29.wav" lokey="27" hikey="30" pitch_keycenter="29"/>
@@ -49,7 +49,7 @@
 			<region sample="XYZD4\GFDF_101.wav" lokey="99" hikey="102" loop_mode="one_shot" pitch_keycenter="101"/>
 			<region sample="XYZD4\GFDF_105.wav" lokey="103" hikey="112" loop_mode="one_shot" pitch_keycenter="105"/>
 		</group>
-		<group lovel="108">
+		<group lovel="108" hivel="127">
 			<region sample="XYZD6\TREF_21.wav" hikey="22" lokey="21" pitch_keycenter="21"/>
 			<region sample="XYZD6\TREF_25.wav" lokey="23" hikey="26" pitch_keycenter="25"/>
 			<region sample="XYZD6\TREF_29.wav" lokey="27" hikey="30" pitch_keycenter="29"/>
@@ -72,37 +72,6 @@
 			<region sample="XYZD6\TREF_97.wav" lokey="95" hikey="98" loop_mode="one_shot" pitch_keycenter="97"/>
 			<region sample="XYZD6\TREF_101.wav" lokey="99" hikey="102" loop_mode="one_shot" pitch_keycenter="101"/>
 			<region sample="XYZD6\TREF_105.wav" lokey="103" hikey="112" loop_mode="one_shot" pitch_keycenter="105"/>
-		</group>
-		<group tune="-20">
-			<region sample="EW\KJHD_22.wav" lokey="21" hikey="23" pitch_keycenter="22"/>
-			<region sample="EW\KJHD_25.wav" lokey="24" hikey="26" pitch_keycenter="25"/>
-			<region sample="EW\KJHD_28.wav" lokey="27" hikey="29" pitch_keycenter="28"/>
-			<region sample="EW\KJHD_31.wav" lokey="30" hikey="32" pitch_keycenter="31"/>
-			<region sample="EW\KJHD_34.wav" lokey="33" hikey="35" pitch_keycenter="34"/>
-			<region sample="EW\KJHD_37.wav" lokey="36" hikey="38" pitch_keycenter="37"/>
-			<region sample="EW\KJHD_40.wav" lokey="39" hikey="41" pitch_keycenter="40"/>
-			<region sample="EW\KJHD_43.wav" lokey="42" hikey="44" pitch_keycenter="43"/>
-			<region sample="EW\KJHD_46.wav" lokey="45" hikey="47" pitch_keycenter="46"/>
-			<region sample="EW\KJHD_49.wav" lokey="48" hikey="50" pitch_keycenter="49"/>
-			<region sample="EW\KJHD_52.wav" lokey="51" hikey="53" pitch_keycenter="52"/>
-			<region sample="EW\KJHD_55.wav" lokey="54" hikey="56" pitch_keycenter="55"/>
-			<region sample="EW\KJHD_58.wav" lokey="57" hikey="59" pitch_keycenter="58"/>
-			<region sample="EW\KJHD_61.wav" lokey="60" hikey="62" pitch_keycenter="61"/>
-			<region sample="EW\KJHD_64.wav" lokey="63" hikey="65" pitch_keycenter="64"/>
-			<region sample="EW\KJHD_67.wav" lokey="66" hikey="68" pitch_keycenter="67"/>
-			<region sample="EW\KJHD_70.wav" lokey="69" hikey="71" pitch_keycenter="70"/>
-			<region sample="EW\KJHD_73.wav" lokey="72" hikey="74" pitch_keycenter="73"/>
-			<region sample="EW\KJHD_76.wav" lokey="75" hikey="77" pitch_keycenter="76"/>
-			<region sample="EW\KJHD_79.wav" lokey="78" hikey="80" pitch_keycenter="79"/>
-			<region sample="EW\KJHD_81.wav" lokey="81" hikey="83" pitch_keycenter="81"/>
-			<region sample="EW\KJHD_85.wav" lokey="84" hikey="86" pitch_keycenter="85"/>
-			<region sample="EW\KJHD_88.wav" lokey="87" hikey="89" pitch_keycenter="88"/>
-			<region sample="EW\KJHD_91.wav" lokey="90" hikey="92" pitch_keycenter="91"/>
-			<region sample="EW\KJHD_94.wav" lokey="93" hikey="95" pitch_keycenter="94"/>
-			<region sample="EW\KJHD_97.wav" lokey="96" hikey="98" pitch_keycenter="97"/>
-			<region sample="EW\KJHD_100.wav" lokey="99" hikey="101" pitch_keycenter="100"/>
-			<region sample="EW\KJHD_103.wav" lokey="102" hikey="104" pitch_keycenter="103"/>
-			<region sample="EW\KJHD_106.wav" lokey="105" hikey="112" pitch_keycenter="106"/>
 		</group>
 	</global>
 </control>

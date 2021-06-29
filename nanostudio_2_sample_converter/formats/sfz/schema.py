@@ -7,6 +7,8 @@ from nanostudio_2_sample_converter.formats.nanostudio_2.obsidian.schema import (
 KEY = "key"
 LO_KEY = "lokey"
 HI_KEY = "hikey"
+LO_VEL = "lovel"
+HI_VEL = "hivel"
 PITCH_KEYCENTER = "pitch_keycenter"
 TRANSPOSE = "transpose"
 NOTE_OFFSET = "note_offset"
@@ -17,13 +19,15 @@ OFFSET = "offset"
 END = "end"
 LOOP_START = "loop_start"
 LOOP_END = "loop_end"
+DIRECTION = "direction"
+LOOP_MODE = "loop_mode"
 
 KEY_OPCODES = [KEY, LO_KEY, HI_KEY, PITCH_KEYCENTER]
 TRANSPOSE_OPCODES = [TRANSPOSE, NOTE_OFFSET, OCTAVE_OFFSET]
 SAMPLE_EDIT_OPCODES = [OFFSET, END, LOOP_START, LOOP_END]
 
 RENAME_OPCODE_ALIASES = {
-    "loopmode": "loop_mode",
+    "loopmode": LOOP_MODE,
     "loopstart": LOOP_START,
     "loopend": LOOP_END,
     "pitch": "tune",
@@ -36,8 +40,9 @@ REGION = {
         PITCH_KEYCENTER: "root_key",
         LO_KEY: "minimum_key",
         HI_KEY: "maximum_key",
-        "direction": "playback_direction",
+        DIRECTION: "playback_direction",
         SAMPLE: "file_name",
+        LOOP_MODE: "loop_mode",
     },
     "obsidian_opcode_remove": [
         KEY,
@@ -59,7 +64,7 @@ REGION = {
         "direction",
         OFFSET,
         END,
-        "loop_mode",
+        LOOP_MODE,
         LOOP_START,
         LOOP_END,
         "loopmode",
@@ -77,10 +82,10 @@ GROUP = {
     "obsidian_tag": "OscX",
     "obsidian_opcode_rename": {},
     "obsidian_opcode_remove": [
-        "lovel",
-        "hivel",
+        LO_VEL,
+        HI_VEL,
     ],
-    "opcodes": ["lovel", "hivel", "tune", "pitch"],
+    "opcodes": [LO_VEL, HI_VEL, "tune", "pitch"],
 }
 
 GLOBAL = {

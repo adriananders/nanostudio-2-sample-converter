@@ -1,0 +1,210 @@
+<?xml version="1.0" ?>
+<Root FileVersion="1" V="3" Tags="603979776" Oct="4">
+	<Voice V="2" Poly="12" Uni="1" UDtn="0" USte="0" GLeg="On" GTim="0">
+		<Osc V="1" Type="Split 3" LL1="0" LL2="0" S2L1="0.5" S3L1="127" S3L2="0" LX1="0" LX2="0">
+			<Osc0 V="1" En="On" Type="Sample" Trn="0" Dtn="0" KeyT="1" Lev="1" Pan="0.5" FMix="0" Ring="0" Widt="0.5" POff="0">
+				<Anlg V="1" Wave="Saw" Sync="OFF" PWM="0" SRat="0" SShp="0.5"/>
+				<Wave V="1" Mode="Crossfade" Pos="0" Dtn="0.5">
+					<WT V="1" Name="Simple/Sin-Tri-Saw"/>
+				</Wave>
+				<PD V="1" Wave="Saw" PD="0.5"/>
+				<FM V="1">
+					<OP>
+						<O1 V="1" Wave="Sine" FrqO="0" Rat="10000"/>
+						<O2 V="1" Wave="Sine" FrqO="0" Rat="10000"/>
+						<O3 V="1" Wave="Sine" FrqO="0" Rat="10000"/>
+					</OP>
+					<Con>
+						<O11 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O11>
+						<O12 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O12>
+						<O13 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O13>
+						<O22 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O22>
+						<O23 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O23>
+						<O1O V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O1O>
+						<O2O V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O2O>
+						<O3O V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O3O>
+					</Con>
+				</FM>
+				<NS V="1" Mix="1" FlOf="0" Dtn="0" Sprd="0"/>
+				<Nois V="1" Type="White" Deci="0" Cut="0.5" Q="0"/>
+				<Samp V="1">
+					<Zones V="1">
+						<Zone File="mf-taiko-v1.ogg" Root="0" Lo="0" Hi="0" Tune="0" Vol="1" Pan="0.5" Dir="Forward" Loop="Off"/>
+						<Zone File="mf-taiko-v2.wav" Root="0" Lo="0" Hi="0" Tune="0" Vol="1" Pan="0.5" Dir="Forward" Loop="Off"/>
+						<Zone File="mf-taiko-v3.wav" Root="0" Lo="0" Hi="0" Tune="0" Vol="1" Pan="0.5" Dir="Forward" Loop="Off"/>
+						<Zone File="mf-taiko-v4.ogg" Root="0" Lo="0" Hi="0" Tune="0" Vol="1" Pan="0.5" Dir="Forward" Loop="Off"/>
+					</Zones>
+				</Samp>
+			</Osc0>
+			<Osc1 V="1" En="On" Type="Sample" Trn="0" Dtn="0" KeyT="1" Lev="1" Pan="0.5" FMix="0" Ring="0" Widt="0.5" POff="0">
+				<Anlg V="1" Wave="Saw" Sync="OFF" PWM="0" SRat="0" SShp="0.5"/>
+				<Wave V="1" Mode="Crossfade" Pos="0" Dtn="0.5">
+					<WT V="1" Name="Simple/Sin-Tri-Saw"/>
+				</Wave>
+				<PD V="1" Wave="Saw" PD="0.5"/>
+				<FM V="1">
+					<OP>
+						<O1 V="1" Wave="Sine" FrqO="0" Rat="10000"/>
+						<O2 V="1" Wave="Sine" FrqO="0" Rat="10000"/>
+						<O3 V="1" Wave="Sine" FrqO="0" Rat="10000"/>
+					</OP>
+					<Con>
+						<O11 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O11>
+						<O12 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O12>
+						<O13 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O13>
+						<O22 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O22>
+						<O23 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O23>
+						<O1O V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O1O>
+						<O2O V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O2O>
+						<O3O V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O3O>
+					</Con>
+				</FM>
+				<NS V="1" Mix="1" FlOf="0" Dtn="0" Sprd="0"/>
+				<Nois V="1" Type="White" Deci="0" Cut="0.5" Q="0"/>
+				<Samp V="1">
+					<Zones V="1"/>
+				</Samp>
+			</Osc1>
+			<Osc2 V="1" En="On" Type="Sample" Trn="0" Dtn="0" KeyT="1" Lev="1" Pan="0.5" FMix="0" Ring="0" Widt="0.5" POff="0">
+				<Anlg V="1" Wave="Saw" Sync="OFF" PWM="0" SRat="0" SShp="0.5"/>
+				<Wave V="1" Mode="Crossfade" Pos="0" Dtn="0.5">
+					<WT V="1" Name="Simple/Sin-Tri-Saw"/>
+				</Wave>
+				<PD V="1" Wave="Saw" PD="0.5"/>
+				<FM V="1">
+					<OP>
+						<O1 V="1" Wave="Sine" FrqO="0" Rat="10000"/>
+						<O2 V="1" Wave="Sine" FrqO="0" Rat="10000"/>
+						<O3 V="1" Wave="Sine" FrqO="0" Rat="10000"/>
+					</OP>
+					<Con>
+						<O11 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O11>
+						<O12 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O12>
+						<O13 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O13>
+						<O22 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O22>
+						<O23 V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O23>
+						<O1O V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O1O>
+						<O2O V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O2O>
+						<O3O V="1" Amt="0">
+							<Env V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+						</O3O>
+					</Con>
+				</FM>
+				<NS V="1" Mix="1" FlOf="0" Dtn="0" Sprd="0"/>
+				<Nois V="1" Type="White" Deci="0" Cut="0.5" Q="0"/>
+				<Samp V="1">
+					<Zones V="1"/>
+				</Samp>
+			</Osc2>
+		</Osc>
+		<Filt V="1" O1BP="OFF" Rout="PARALLEL">
+			<F1 V="1" En="Off" Type="LP 12-A" CutO="1" Q="0" SGan="0" FVwl="0.5" CMix="1" WSGn="0.5" Drv="0" KeyT="1" OGn="1" Pan="0.5"/>
+			<F2 V="1" En="Off" Type="LP 12-A" CutO="1" Q="0" SGan="0" FVwl="0.5" CMix="1" WSGn="0.5" Drv="0" KeyT="1" OGn="1" Pan="0.5"/>
+			<F3 V="1" En="Off" Type="LP 12-A" CutO="1" Q="0" SGan="0" FVwl="0.5" CMix="1" WSGn="0.5" Drv="0" KeyT="1" OGn="1" Pan="0.5"/>
+		</Filt>
+		<Env V="1">
+			<EnvA V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+			<EnvF V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+			<EnvP V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+			<Env4 V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+			<Env5 V="2" Type="ADSR" A="0" D="0" Brk="0" S="1" D2="0" R="0" Levl="1" Dly="0" SLv="0" RLv="0" AC="2" SC="2" DC="2" RC="2" VTim="0" VLev="0" KCtr="24" KTim="0" KLev="0"/>
+		</Env>
+		<LFO V="1">
+			<LFO1 V="1" Type="Sine" Rt="4" RtBt="1" BRt="Hz" Sync="OFF" OutT="BIPOLAR" Atk="0" Ampl="0" PhOf="0" Crv="0.5" SqCv="0" Warp="0.5" Qtz="0" RPtn="8" RLen="2"/>
+			<LFO2 V="1" Type="Sine" Rt="4" RtBt="1" BRt="Hz" Sync="OFF" OutT="BIPOLAR" Atk="0" Ampl="0" PhOf="0" Crv="0.5" SqCv="0" Warp="0.5" Qtz="0" RPtn="8" RLen="2"/>
+			<LFO3 V="1" Type="Sine" Rt="4" RtBt="1" BRt="Hz" Sync="OFF" OutT="BIPOLAR" Atk="0" Ampl="0" PhOf="0" Crv="0.5" SqCv="0" Warp="0.5" Qtz="0" RPtn="8" RLen="2"/>
+			<LFO4 V="1" Type="Sine" Rt="4" RtBt="1" BRt="Hz" Sync="OFF" OutT="BIPOLAR" Atk="0" Ampl="0" PhOf="0" Crv="0.5" SqCv="0" Warp="0.5" Qtz="0" RPtn="8" RLen="2"/>
+			<LFO5 V="1" Type="Sine" Rt="4" RtBt="1" BRt="Hz" Sync="OFF" OutT="BIPOLAR" Atk="0" Ampl="0" PhOf="0" Crv="0.5" SqCv="0" Warp="0.5" Qtz="0" RPtn="8" RLen="2"/>
+		</LFO>
+		<Mod V="2">
+			<C00 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C01 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C02 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C03 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C04 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C05 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C06 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C07 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C08 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C09 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C10 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C11 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C12 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C13 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C14 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C15 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C16 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C17 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C18 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C19 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C20 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C21 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C22 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<C23 V="3" Src="None" Dest="None" DstP="---" Sca="None" Dept="100"/>
+			<UI>
+				<C00 Name=""/>
+				<C01 Name=""/>
+				<C02 Name=""/>
+				<C03 Name=""/>
+				<C04 Name=""/>
+				<C05 Name=""/>
+				<C06 Name=""/>
+				<C07 Name=""/>
+				<C08 Name=""/>
+				<C09 Name=""/>
+			</UI>
+		</Mod>
+	</Voice>
+	<FX V="1" En="0" Ord="131328">
+		<MFX V="1" Type="Chorus 1" En="0" Rat="0.25" Dep="0.5" Dly="0.5" FB="0" Wid="0.5" Mix="1"/>
+		<Dly V="1" En="0" Type="Stereo" DTim="0.5" TNum="1" TDen="sec" EQCt="0.5" FB="0" Mix="0.33"/>
+		<Rev V="1" Type="Small Room 1" En="0" LCut="0.25" HCut="0.25" Decy="0.5" HDmp="0.25" Mix="0.25"/>
+	</FX>
+	<Autm C01="0.5" C02="0" C03="0" C04="0" C05="0" C06="0" C07="0" C08="0" C09="0" C10="0" C11="0"/>
+</Root>

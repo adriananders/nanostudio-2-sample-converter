@@ -6,7 +6,7 @@ from lxml import etree as ET
 
 
 def coalesce_parameter(settings, key, default_value):
-    return settings[key] if settings and settings[key] else default_value
+    return settings[key] if settings and key in settings and settings[key] else default_value
 
 
 def set_xml_attribute(element, attribute, settings, key, default_value):

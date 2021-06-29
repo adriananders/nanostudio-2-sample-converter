@@ -22,6 +22,7 @@ from nanostudio_2_sample_converter.formats.nanostudio_2.obsidian.schema import (
     NOISE,
     SAMPLER,
     SAMPLER_ZONE_GROUP,
+    SAMPLER_ZONE,
     FILTER_GROUP,
     FILTER,
     ENVELOPE_GROUP,
@@ -45,12 +46,12 @@ from nanostudio_2_sample_converter.formats.nanostudio_2.utils import (
 
 
 class Obsidian:
-    def __init__(self):
-        self.xml = Obsidian.create_default_xml()
+    def __init__(self, oscillator_group=None):
+        self.xml = Obsidian.create_default_xml(self, oscillator_group)
         self.xml_string = Obsidian.create_output_xml(self.xml)
 
     @staticmethod
-    def create_default_xml():
+    def create_oscillator_group(split_3_low_1=None, split_3_low_2=None, sampler_list=None):
         analog = create_xml(schema=ANALOG)
         wavetable_table = create_xml(schema=WAVETABLE_TABLE)
         wavetable = create_xml(schema=WAVETABLE, children=[wavetable_table])
@@ -87,12 +88,23 @@ class Obsidian:
         )
         nano_saw = create_xml(schema=NANO_SAW)
         noise = create_xml(schema=NOISE)
-        zones = create_xml(schema=SAMPLER_ZONE_GROUP)
-        sampler = create_xml(schema=SAMPLER, children=[zones])
-        oscillator_list = [
-            create_xml(
+        oscillator_range = list(range(0, 3))
+        oscillator_list = []
+        for oscillator_id in oscillator_range:
+            settings = {}
+            zones = []
+            if sampler_list and oscillator_id < len(sampler_list):
+                zones_settings_list = sampler_list[oscillator_id]
+                for zone_settings in zones_settings_list:
+                    sampler_zone = create_xml(schema=SAMPLER_ZONE, settings=zone_settings)
+                    zones.append(sampler_zone)
+            else:
+                zones = None
+            zone_group = create_xml(schema=SAMPLER_ZONE_GROUP, children=zones if zones else None)
+            sampler = create_xml(schema=SAMPLER, settings=settings, children=[zone_group])
+            oscillator = create_xml(
                 schema=OSCILLATOR,
-                tag_suffix=create_numeric_suffix(o),
+                tag_suffix=create_numeric_suffix(oscillator_id),
                 children=[
                     analog,
                     wavetable,
@@ -104,9 +116,16 @@ class Obsidian:
                 ],
                 copy=True,
             )
-            for o in list(range(0, 3))
-        ]
-        oscillator_group = create_xml(schema=OSCILLATOR_GROUP, children=oscillator_list)
+            oscillator_list.append(oscillator)
+        settings = {}
+        if split_3_low_1:
+            settings['split_3_low_1'] = split_3_low_1
+        if split_3_low_2:
+            settings['split_3_low_2'] = split_3_low_2
+        return create_xml(schema=OSCILLATOR_GROUP, settings=settings, children=oscillator_list)
+
+    def create_default_xml(self, oscillator_group):
+        oscillator_group = oscillator_group if oscillator_group else self.create_oscillator_group()
         filter_list = [
             create_xml(schema=FILTER, tag_suffix=create_numeric_suffix(f))
             for f in list(range(1, 4))
@@ -118,8 +137,8 @@ class Obsidian:
         ]
         envelope_group = create_xml(schema=ENVELOPE_GROUP, children=envelope_list)
         lfo_list = [
-            create_xml(schema=LFO, tag_suffix=create_numeric_suffix(l))
-            for l in list(range(1, 6))
+            create_xml(schema=LFO, tag_suffix=create_numeric_suffix(lfo))
+            for lfo in list(range(1, 6))
         ]
         lfo_group = create_xml(schema=LFO_GROUP, children=lfo_list)
         control_list = [
