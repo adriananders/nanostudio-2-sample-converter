@@ -51,7 +51,9 @@ class Obsidian:
         self.xml_string = Obsidian.create_output_xml(self.xml)
 
     @staticmethod
-    def create_oscillator_group(split_3_low_1=None, split_3_low_2=None, sampler_list=None):
+    def create_oscillator_group(
+        split_3_low_1=None, split_3_low_2=None, sampler_list=None
+    ):
         analog = create_xml(schema=ANALOG)
         wavetable_table = create_xml(schema=WAVETABLE_TABLE)
         wavetable = create_xml(schema=WAVETABLE, children=[wavetable_table])
@@ -96,12 +98,18 @@ class Obsidian:
             if sampler_list and oscillator_id < len(sampler_list):
                 zones_settings_list = sampler_list[oscillator_id]
                 for zone_settings in zones_settings_list:
-                    sampler_zone = create_xml(schema=SAMPLER_ZONE, settings=zone_settings)
+                    sampler_zone = create_xml(
+                        schema=SAMPLER_ZONE, settings=zone_settings
+                    )
                     zones.append(sampler_zone)
             else:
                 zones = None
-            zone_group = create_xml(schema=SAMPLER_ZONE_GROUP, children=zones if zones else None)
-            sampler = create_xml(schema=SAMPLER, settings=settings, children=[zone_group])
+            zone_group = create_xml(
+                schema=SAMPLER_ZONE_GROUP, children=zones if zones else None
+            )
+            sampler = create_xml(
+                schema=SAMPLER, settings=settings, children=[zone_group]
+            )
             oscillator = create_xml(
                 schema=OSCILLATOR,
                 tag_suffix=create_numeric_suffix(oscillator_id),
@@ -119,13 +127,17 @@ class Obsidian:
             oscillator_list.append(oscillator)
         settings = {}
         if split_3_low_1:
-            settings['split_3_low_1'] = split_3_low_1
+            settings["split_3_low_1"] = split_3_low_1
         if split_3_low_2:
-            settings['split_3_low_2'] = split_3_low_2
-        return create_xml(schema=OSCILLATOR_GROUP, settings=settings, children=oscillator_list)
+            settings["split_3_low_2"] = split_3_low_2
+        return create_xml(
+            schema=OSCILLATOR_GROUP, settings=settings, children=oscillator_list
+        )
 
     def create_default_xml(self, oscillator_group):
-        oscillator_group = oscillator_group if oscillator_group else self.create_oscillator_group()
+        oscillator_group = (
+            oscillator_group if oscillator_group else self.create_oscillator_group()
+        )
         filter_list = [
             create_xml(schema=FILTER, tag_suffix=create_numeric_suffix(f))
             for f in list(range(1, 4))

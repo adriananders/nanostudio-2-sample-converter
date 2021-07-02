@@ -77,19 +77,19 @@ class TestSfz(TestCase):
         self.assertFalse(os.path.exists(DESTINATION_PATCH))
         sfz = Sfz(SFZ_PATH, DESTINATION_PATH, "obs")
         self.assertTrue(os.path.exists(DESTINATION_PATCH))
-        sfz.export_obs()
+        sfz.export()
         with open(DESTINATION_PATCH_PACKAGE) as sample_file:
             sample = sample_file.read()
             sample = " ".join(sample.split())
         sample_xml = ET.fromstring(sample)
         sample_xml_string = ET.tostring(sample_xml).decode("utf-8")
         sample_xml_string = sample_xml_string.replace("> <", "><")
-        sample_xml_pretty = xml.dom.minidom.parseString(
-            sample_xml_string
-        ).toprettyxml()
-        obs_xml_pretty = xml.dom.minidom.parseString(sfz.obs_xml).toprettyxml()
-        self.assertEqual(sample_xml_pretty.replace("\n", "").replace("\t", ""),
-                         obs_xml_pretty.replace("\n", "").replace("\t", ""))
+        sample_xml_pretty = xml.dom.minidom.parseString(sample_xml_string).toprettyxml()
+        ns2_xml_pretty = xml.dom.minidom.parseString(sfz.ns2_xml).toprettyxml()
+        self.assertEqual(
+            sample_xml_pretty.replace("\n", "").replace("\t", ""),
+            ns2_xml_pretty.replace("\n", "").replace("\t", ""),
+        )
         files = [
             "mf-taiko-v1.ogg",
             "mf-taiko-v2.wav",
@@ -113,4 +113,3 @@ class TestSfz(TestCase):
             )
             smpl_binary = open_file.read()
             self.assertIn(expected_smpl_binary, smpl_binary)
-

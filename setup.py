@@ -92,14 +92,24 @@ class InstallPyCommand(setuptools.command.install.install):
 setup(
     name="nanostudio_2_sample_converter",
     version="0.0.1",
-    packages=[""],
+    packages=[
+        "nanostudio_2_sample_converter",
+        "nanostudio_2_sample_converter.formats",
+        "nanostudio_2_sample_converter.formats.nanostudio_2",
+        "nanostudio_2_sample_converter.formats.nanostudio_2.obsidian",
+        "nanostudio_2_sample_converter.formats.sfz",
+        "nanostudio_2_sample_converter.formats.sfz.utils",
+        "nanostudio_2_sample_converter.formats.sfz.utils.wave_chunk_parser_extended",
+    ],
     python_requires=">=3",
-    entry_points={"console_scripts": []},
+    entry_points={
+        "console_scripts": ["ns2samplconv=nanostudio_2_sample_converter.converter:main"]
+    },
     cmdclass={
-        "black": BlackCommand,
+        "format": BlackCommand,
         "build_py": BuildPyCommand,
         "install": InstallPyCommand,
-        "pylint": PylintCommand,
+        "lint": PylintCommand,
     },
     test_suite="tests",
     url="https://github.com/adriananders/nanostudio-2-sample-converter",

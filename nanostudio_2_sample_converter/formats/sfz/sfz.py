@@ -1,3 +1,4 @@
+# pylint: disable=too-many-instance-attributes
 """
 Sfz conversion functions
 Note: schema taken from sfzformat.com
@@ -7,7 +8,6 @@ import shutil
 from copy import deepcopy
 from pathlib import Path
 from lxml import etree as ET
-import xml.dom.minidom
 from pretty_midi.utilities import key_name_to_key_number
 from nanostudio_2_sample_converter.formats.sfz.schema import (
     SFZ,
@@ -36,7 +36,7 @@ from nanostudio_2_sample_converter.formats.sfz.schema import (
     GROUP,
     REGION,
     DIRECTION,
-    LOOP_MODE
+    LOOP_MODE,
 )
 from nanostudio_2_sample_converter.formats.sfz.exceptions import (
     SfzDestinationException,
@@ -49,11 +49,14 @@ from nanostudio_2_sample_converter.formats.sfz.utils.audio import (
     add_loop_to_audio_data,
     write_audio_file,
 )
-from nanostudio_2_sample_converter.formats.nanostudio_2.obsidian.obsidian import Obsidian
+from nanostudio_2_sample_converter.formats.nanostudio_2.obsidian.obsidian import (
+    Obsidian,
+)
 
 
 class Sfz:
     def __init__(self, sfz_file_path, destination_directory, extension):
+        self.extension = extension
         self.max_velocity_zones = 3
         self.sfz_file_path = sfz_file_path
         if not os.path.exists(self.sfz_file_path):
@@ -61,7 +64,7 @@ class Sfz:
         self.sfz_parent_path = Path(sfz_file_path).parent.absolute()
         self.patch_name = (
             ".".join(os.path.basename(self.sfz_file_path).split(".")[:-1])
-            + f".{extension}"
+            + f".{self.extension}"
         )
         if not destination_directory:
             raise SfzDestinationException(
@@ -75,7 +78,7 @@ class Sfz:
         self.__copy_audio_files()
         self.__convert_audio_files_to_ns_audio_files()
         self.__update_sample_to_basename()
-        self.obs_xml = self.__xml_to_obs()
+        self.ns2_xml = self.__xml_to_obs()
 
     @staticmethod
     def __remove_comment_filter(line):
@@ -291,51 +294,60 @@ class Sfz:
 
     def __add_high_low_velocities(self, sfz_xml):
         for element in sfz_xml.iter():
-            if element.tag == GROUP['header']:
+            if element.tag == GROUP["header"]:
                 velocity_opcodes = self.__find_valid_opcodes(element, [LO_VEL, HI_VEL])
                 if LO_VEL not in velocity_opcodes.keys():
-                    velocity_opcodes[LO_VEL] = '0'
+                    velocity_opcodes[LO_VEL] = "0"
                 if HI_VEL not in velocity_opcodes.keys():
-                    velocity_opcodes[HI_VEL] = '127'
+                    velocity_opcodes[HI_VEL] = "127"
                 self.__update_xml_attributes(element, velocity_opcodes)
 
     @staticmethod
     def is_ranges_overlap(min_max_1, min_max_2):
-        range_1 = range(int(min_max_1[0]), int(min_max_1[1])+1)
-        range_2 = range(int(min_max_2[0]), int(min_max_2[1])+1)
-        return not not len(list(set(range_1) & set(range_2)))
+        range_1 = range(int(min_max_1[0]), int(min_max_1[1]) + 1)
+        range_2 = range(int(min_max_2[0]), int(min_max_2[1]) + 1)
+        return len(list(set(range_1) & set(range_2))) > 0
 
     def __remove_velocity_overlap(self, sfz_xml):
         for element in sfz_xml.iter():
-            if element.tag == GROUP['header']:
+            if element.tag == GROUP["header"]:
                 velocity = self.__find_valid_opcodes(element, [LO_VEL, HI_VEL])
                 for element_compared in sfz_xml.iter():
-                    velocity_compared = self.__find_valid_opcodes(element_compared, [LO_VEL, HI_VEL])
-                    if element_compared.tag == GROUP['header'] \
-                        and element_compared != element \
-                        and self.is_ranges_overlap([velocity[LO_VEL], velocity[HI_VEL]],
-                                                 [velocity_compared[LO_VEL], velocity_compared[HI_VEL]]):
+                    velocity_compared = self.__find_valid_opcodes(
+                        element_compared, [LO_VEL, HI_VEL]
+                    )
+                    if (
+                        element_compared.tag == GROUP["header"]
+                        and element_compared != element
+                        and self.is_ranges_overlap(
+                            [velocity[LO_VEL], velocity[HI_VEL]],
+                            [velocity_compared[LO_VEL], velocity_compared[HI_VEL]],
+                        )
+                    ):
                         element_compared.getparent().remove(element_compared)
 
     def __reduce_to_three_max_velocity_zones(self, sfz_xml):
         velocity_zone_running_count = 0
         for element in sfz_xml.iter():
-            if element.tag == GROUP['header']:
+            if element.tag == GROUP["header"]:
                 if velocity_zone_running_count > self.max_velocity_zones - 1:
                     element.getparent().remove(element)
                 velocity_zone_running_count += 1
 
     def __fill_to_min_max_velocity(self, sfz_xml):
         velocity_zone_running_count = 0
-        header = GROUP['header']
-        velocity_zone_count = sfz_xml.xpath(f'count(//{header})') - 1
+        header = GROUP["header"]
+        velocity_zone_count = sfz_xml.xpath(f"count(//{header})") - 1
         for element in sfz_xml.iter():
             if element.tag == header:
                 velocity = self.__find_valid_opcodes(element, [LO_VEL, HI_VEL])
-                if velocity_zone_running_count == 0 and velocity[LO_VEL] != '0':
-                    velocity[LO_VEL] = '0'
-                if velocity_zone_running_count == velocity_zone_count and velocity[HI_VEL] != '127':
-                    velocity[HI_VEL] = '127'
+                if velocity_zone_running_count == 0 and velocity[LO_VEL] != "0":
+                    velocity[LO_VEL] = "0"
+                if (
+                    velocity_zone_running_count == velocity_zone_count
+                    and velocity[HI_VEL] != "127"
+                ):
+                    velocity[HI_VEL] = "127"
                 self.__update_xml_attributes(element, velocity)
                 velocity_zone_running_count += 1
 
@@ -468,21 +480,23 @@ class Sfz:
         return sfz_xml
 
     def __get_split_3_low_1(self):
-        header = GROUP['header']
+        header = GROUP["header"]
         for element in self.sfz_xml.iter():
             if element.tag == header:
                 velocity = self.__find_valid_opcodes(element, [HI_VEL])
                 return velocity[HI_VEL]
+        return None
 
     def __get_split_3_low_2(self):
         velocity_zone_running_count = 0
-        header = GROUP['header']
-        velocity_zone_count = self.sfz_xml.xpath(f'count(//{header})') - 1
+        header = GROUP["header"]
+        velocity_zone_count = self.sfz_xml.xpath(f"count(//{header})") - 1
         for element in self.sfz_xml.iter():
             if element.tag == header:
                 velocity = self.__find_valid_opcodes(element, [LO_VEL])
                 if velocity_zone_running_count == velocity_zone_count:
                     return velocity[LO_VEL]
+        return None
 
     @staticmethod
     def __convert_element_to_settings_dictionary(element, schema):
@@ -490,7 +504,9 @@ class Sfz:
         if DIRECTION in attributes.keys():
             attributes[DIRECTION] = attributes[DIRECTION].capitalize()
         if LOOP_MODE in attributes.keys():
-            attributes[LOOP_MODE] = "On" if attributes[LOOP_MODE] == "loop_continuous" else "Off"
+            attributes[LOOP_MODE] = (
+                "On" if attributes[LOOP_MODE] == "loop_continuous" else "Off"
+            )
         settings_dictionary = {}
         for (key, value) in attributes.items():
             opcode_rename = schema["obsidian_opcode_rename"]
@@ -499,7 +515,7 @@ class Sfz:
         return settings_dictionary
 
     def __create_sampler_list(self):
-        header = GROUP['header']
+        header = GROUP["header"]
         sampler_list = []
         for element in self.sfz_xml.iter():
             if element.tag == header:
@@ -519,12 +535,14 @@ class Sfz:
         oscillator_group = Obsidian().create_oscillator_group(
             split_3_low_1=split_3_low_1,
             split_3_low_2=split_3_low_2,
-            sampler_list=sampler_list
+            sampler_list=sampler_list,
         )
         obsidian = Obsidian(oscillator_group)
         return obsidian.xml_string
 
-    def export_obs(self):
-        destination_file_path = os.path.join(self.destination_directory, "Package.obs")
+    def export(self):
+        destination_file_path = os.path.join(
+            self.destination_directory, "Package." + self.extension
+        )
         with open(destination_file_path, "w") as destination_file:
-            destination_file.write(self.obs_xml)
+            destination_file.write(self.ns2_xml)
