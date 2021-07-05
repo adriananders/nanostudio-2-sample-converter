@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Root FileVersion="1" V="3" Tags="603979776" Oct="4">
 	<Voice V="2" Poly="12" Uni="1" UDtn="0" USte="0" GLeg="On" GTim="0">
-		<Osc V="1" Type="Split 3" LL1="0" LL2="0" S2L1="0.5" S3L1="127" S3L2="0" LX1="0" LX2="0">
+		<Osc V="1" Type="Split 3" LL1="0" LL2="0" S2L1="0.5" S3L1="1.0" S3L2="1.0" LX1="0" LX2="0">
 			<Osc0 V="1" En="On" Type="Sample" Trn="0" Dtn="0" KeyT="1" Lev="1" Pan="0.5" FMix="0" Ring="0" Widt="0.5" POff="0">
 				<Anlg V="1" Wave="Saw" Sync="OFF" PWM="0" SRat="0" SShp="0.5"/>
 				<Wave V="1" Mode="Crossfade" Pos="0" Dtn="0.5">

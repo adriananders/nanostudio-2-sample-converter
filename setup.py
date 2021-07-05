@@ -94,6 +94,7 @@ setup(
     version="0.0.1",
     packages=[
         "nanostudio_2_sample_converter",
+        "nanostudio_2_sample_converter.utils",
         "nanostudio_2_sample_converter.formats",
         "nanostudio_2_sample_converter.formats.nanostudio_2",
         "nanostudio_2_sample_converter.formats.nanostudio_2.obsidian",

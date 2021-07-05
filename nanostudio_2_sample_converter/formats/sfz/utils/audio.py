@@ -77,6 +77,12 @@ def add_loop_to_audio_data(file, loop_start, loop_end):
     return RiffChunkExtended(chunks).to_bytes()
 
 
+def check_if_audio_has_loops(file):
+    riff_chunk = RiffChunkExtended.from_file(file)
+    sample_chunk = riff_chunk.sub_chunks[RiffChunkExtended.CHUNK_SAMPLE]
+    return sample_chunk.first_loop_end != sample_chunk.first_loop_start
+
+
 def write_audio_file(data, file_path):
     with open(file_path, "wb") as file:
         file.write(data)

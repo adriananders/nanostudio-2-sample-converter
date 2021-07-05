@@ -52,7 +52,7 @@ class Obsidian:
 
     @staticmethod
     def create_oscillator_group(
-        split_3_low_1=None, split_3_low_2=None, sampler_list=None
+        split_3_level_1=None, split_3_level_2=None, sampler_list=None
     ):
         analog = create_xml(schema=ANALOG)
         wavetable_table = create_xml(schema=WAVETABLE_TABLE)
@@ -126,17 +126,19 @@ class Obsidian:
             )
             oscillator_list.append(oscillator)
         settings = {}
-        if split_3_low_1:
-            settings["split_3_low_1"] = split_3_low_1
-        if split_3_low_2:
-            settings["split_3_low_2"] = split_3_low_2
+        if split_3_level_1:
+            settings["split_3_level_1"] = split_3_level_1
+        if split_3_level_2:
+            settings["split_3_level_2"] = split_3_level_2
         return create_xml(
             schema=OSCILLATOR_GROUP, settings=settings, children=oscillator_list
         )
 
     def create_default_xml(self, oscillator_group):
         oscillator_group = (
-            oscillator_group if oscillator_group else self.create_oscillator_group()
+            oscillator_group
+            if oscillator_group is not None
+            else self.create_oscillator_group()
         )
         filter_list = [
             create_xml(schema=FILTER, tag_suffix=create_numeric_suffix(f))

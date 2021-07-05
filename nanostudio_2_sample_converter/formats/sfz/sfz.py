@@ -1,9 +1,10 @@
-# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-instance-attributes, too-many-nested-blocks
 """
 Sfz conversion functions
 Note: schema taken from sfzformat.com
 """
 import os
+import re
 import shutil
 from copy import deepcopy
 from pathlib import Path
@@ -34,6 +35,7 @@ from nanostudio_2_sample_converter.formats.sfz.schema import (
     LOOP_END,
     SAMPLE_EDIT_OPCODES,
     GROUP,
+    CONTROL,
     REGION,
     DIRECTION,
     LOOP_MODE,
@@ -43,11 +45,13 @@ from nanostudio_2_sample_converter.formats.sfz.exceptions import (
     SfzUserCancelOperation,
     SfzDoesNotExistException,
     AudioFileDoesNotExistException,
+    DirectoryExistsException,
 )
 from nanostudio_2_sample_converter.formats.sfz.utils.audio import (
     Audio,
     add_loop_to_audio_data,
     write_audio_file,
+    check_if_audio_has_loops,
 )
 from nanostudio_2_sample_converter.formats.nanostudio_2.obsidian.obsidian import (
     Obsidian,
@@ -90,8 +94,25 @@ class Sfz:
         return " ".join(line_string.split())
 
     @staticmethod
-    def __encapsulate_headers_as_xml_elements(sfz_string):
-        sfz_list = sfz_string.split()
+    def __split_attribute_strings(sfz_string, sfz_list):
+        for character in sfz_string:
+            if character == "<" or sfz_list[-1][-1] == ">":
+                sfz_list.append(character)
+            elif character == "=":
+                prior_list_item = sfz_list[-1]
+                prior_space_index = prior_list_item.rfind(" ", 0)
+                if prior_space_index != -1:
+                    attribute_key_string = prior_list_item[prior_space_index + 1 :]
+                    sfz_list[-1] = prior_list_item[:prior_space_index]
+                    sfz_list.append(attribute_key_string)
+                sfz_list[-1] += character
+            else:
+                sfz_list[-1] += character
+        return sfz_list
+
+    def __encapsulate_headers_as_xml_elements(self, sfz_string):
+        sfz_list = self.__split_attribute_strings(sfz_string, [])
+        sfz_list = [item.strip() for item in sfz_list]
         sfz_range = [
             {"start": index}
             for index, statement in enumerate(sfz_list)
@@ -178,7 +199,7 @@ class Sfz:
                     element, header_opcodes
                 )
                 parent = element.getparent()
-                if parent:
+                if parent is not None:
                     merged_attributes = self.__merge_dictionaries(
                         parent.attrib, invalid_header_opcodes
                     )
@@ -221,7 +242,11 @@ class Sfz:
     def __convert_key_string_to_key_number(string):
         if string[0].isdigit():
             return string
-        return key_name_to_key_number(string)
+        compiled_regex = re.compile("([a-zA-Z#]+)([0-9]+)")
+        key_tuple = compiled_regex.match(string).groups()
+        return str(
+            key_name_to_key_number(key_tuple[0].upper()) + (int(key_tuple[1]) * 12)
+        )
 
     def __convert_opcodes_key_string_to_key_number(self, sfz_xml):
         for header in HEADERS:
@@ -351,6 +376,37 @@ class Sfz:
                 self.__update_xml_attributes(element, velocity)
                 velocity_zone_running_count += 1
 
+    # Required because NS2 has a hard limit of 32 zones per velocity layer. This is common between obs and slt.
+    @staticmethod
+    def __reduce_regions(sfz_xml):
+        region = REGION["header"]
+        group = GROUP["header"]
+        max_ns2_samples = 32
+        for element in sfz_xml.iter():
+            if element.tag == group:
+                region_count = element.xpath(f"count(.//{region})")
+                if region_count > max_ns2_samples:
+                    region_index = 1
+                    for child in element.iter():
+                        if child.tag == region:
+                            if region_index > max_ns2_samples:
+                                element.remove(child)
+                            region_index += 1
+
+    @staticmethod
+    def __remove_control_between_groups_and_regions(sfz_xml):
+        control = CONTROL["header"]
+        group = GROUP["header"]
+        for element in sfz_xml.iter():
+            if element.tag == control:
+                group_count = element.xpath(f"count(.//{group})")
+                if group_count == 0:
+                    parent = element.getparent()
+                    children = element.getchildren()
+                    for child in children:
+                        parent.append(child)
+                    parent.remove(element)
+
     @staticmethod
     def __get_lo_vel(elem):
         return int(elem.get(LO_VEL))
@@ -378,6 +434,10 @@ class Sfz:
         pass
 
     def __create_destination_directory(self):
+        if os.path.isdir(self.destination_directory):
+            raise DirectoryExistsException(
+                f"{self.destination_directory} already exists. Please delete and try again."
+            )
         os.makedirs(self.destination_directory)
 
     def __copy_audio_files(self):
@@ -443,6 +503,10 @@ class Sfz:
                     with open(file_path, "rb") as file:
                         data = add_loop_to_audio_data(file, loop_start, loop_end)
                     write_audio_file(data, file_path)
+                if extension.lower() == "wav":
+                    with open(file_path, "rb") as file:
+                        if check_if_audio_has_loops(file):
+                            sample_opcode[LOOP_MODE] = "loop_continuous"
                 self.__update_xml_attributes(element, sample_opcode)
                 self.__pop_xml_attributes(element, edit_opcodes)
 
@@ -454,13 +518,15 @@ class Sfz:
                 self.__update_xml_attributes(element, sample_opcode)
 
     def __sfz_to_xml(self):
-        with open(self.sfz_file_path, "r") as reader:
+        with open(self.sfz_file_path, "r", encoding="utf-8", errors="ignore") as reader:
             sfz_lines = reader.readlines()
-        sfz_string = Sfz.__convert_list_to_string_single_space(
-            list(filter(Sfz.__remove_comment_filter, sfz_lines))
+        sfz_string = self.__convert_list_to_string_single_space(
+            list(filter(self.__remove_comment_filter, sfz_lines))
         )
         sfz_string = (
-            "<root>" + Sfz.__encapsulate_headers_as_xml_elements(sfz_string) + "</root>"
+            "<root>"
+            + self.__encapsulate_headers_as_xml_elements(sfz_string)
+            + "</root>"
         )
         sfz_xml = ET.fromstring(sfz_string)
         self.__remove_unsupported_headers(sfz_xml)
@@ -477,17 +543,19 @@ class Sfz:
         self.__remove_velocity_overlap(sfz_xml)
         self.__reduce_to_three_max_velocity_zones(sfz_xml)
         self.__fill_to_min_max_velocity(sfz_xml)
+        self.__remove_control_between_groups_and_regions(sfz_xml)
+        self.__reduce_regions(sfz_xml)
         return sfz_xml
 
-    def __get_split_3_low_1(self):
+    def __get_split_3_level_1(self):
         header = GROUP["header"]
         for element in self.sfz_xml.iter():
             if element.tag == header:
                 velocity = self.__find_valid_opcodes(element, [HI_VEL])
-                return velocity[HI_VEL]
+                return str(int(velocity[HI_VEL]) / 127)
         return None
 
-    def __get_split_3_low_2(self):
+    def __get_split_3_level_2(self, split_3_level_1):
         velocity_zone_running_count = 0
         header = GROUP["header"]
         velocity_zone_count = self.sfz_xml.xpath(f"count(//{header})") - 1
@@ -495,7 +563,12 @@ class Sfz:
             if element.tag == header:
                 velocity = self.__find_valid_opcodes(element, [LO_VEL])
                 if velocity_zone_running_count == velocity_zone_count:
-                    return velocity[LO_VEL]
+                    split_3_level_2 = str(int(velocity[LO_VEL]) / 127)
+                    return (
+                        split_3_level_2
+                        if split_3_level_2 > split_3_level_1
+                        else split_3_level_1
+                    )
         return None
 
     @staticmethod
@@ -529,12 +602,13 @@ class Sfz:
         return sampler_list
 
     def __xml_to_obs(self):
-        split_3_low_1 = self.__get_split_3_low_1()
-        split_3_low_2 = self.__get_split_3_low_2()
+        split_3_level_1 = self.__get_split_3_level_1()
+        split_3_level_2 = self.__get_split_3_level_2(split_3_level_1)
+
         sampler_list = self.__create_sampler_list()
         oscillator_group = Obsidian().create_oscillator_group(
-            split_3_low_1=split_3_low_1,
-            split_3_low_2=split_3_low_2,
+            split_3_level_1=split_3_level_1,
+            split_3_level_2=split_3_level_2,
             sampler_list=sampler_list,
         )
         obsidian = Obsidian(oscillator_group)

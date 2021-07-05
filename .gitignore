@@ -132,3 +132,4 @@ dmypy.json
 .idea/
 .DS_Store
 tests/sfz/sample-files/sfz_regression_test_suite/sfz/tests
+tests/sfz/additional_tests

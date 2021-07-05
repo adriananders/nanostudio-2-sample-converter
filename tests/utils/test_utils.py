@@ -1,5 +1,5 @@
 from unittest import TestCase
-from nanostudio_2_sample_converter.utils.utils import create_parser, validate_args
+from nanostudio_2_sample_converter.utils.utils import create_parser, create_args
 from nanostudio_2_sample_converter.utils.exceptions import (
     ConverterSourceException,
     ConverterSourceExtensionException,
@@ -16,7 +16,7 @@ class TestValidateArgs(TestCase):
     def test_source_not_provided(self):
         args = self.parser.parse_args([])
         with self.assertRaises(ConverterSourceException) as context:
-            validate_args(args)
+            create_args(args)
         self.assertEqual(
             "Error! Please specify required --source argument.",
             context.exception.args[0],
@@ -25,7 +25,7 @@ class TestValidateArgs(TestCase):
     def test_source_no_extension(self):
         args = self.parser.parse_args(["--source", "test"])
         with self.assertRaises(ConverterSourceExtensionException) as context:
-            validate_args(args)
+            create_args(args)
         self.assertEqual(
             "Error! Source path does not contain an extension. Must specify a specific source file.",
             context.exception.args[0],
@@ -34,7 +34,7 @@ class TestValidateArgs(TestCase):
     def test_source_unsupported_extension(self):
         args = self.parser.parse_args(["--source", "test.tst"])
         with self.assertRaises(ConverterUnsupportedSourceFormatException) as context:
-            validate_args(args)
+            create_args(args)
         self.assertEqual(
             "Error! Source format tst is not supported. Currently supported formats: sfz.",
             context.exception.args[0],
@@ -43,7 +43,7 @@ class TestValidateArgs(TestCase):
     def test_destination_not_provided(self):
         args = self.parser.parse_args(["--source", "test.SFZ"])
         with self.assertRaises(ConverterDestinationException) as context:
-            validate_args(args)
+            create_args(args)
         self.assertEqual(
             "Error! Please specify required --destination argument.",
             context.exception.args[0],
@@ -63,7 +63,7 @@ class TestValidateArgs(TestCase):
         with self.assertRaises(
             ConverterUnsupportedDestinationFormatException
         ) as context:
-            validate_args(args)
+            create_args(args)
         self.assertEqual(
             "Error! Destination format blh is not supported. Currently supported formats: obs.",
             context.exception.args[0],
@@ -73,8 +73,15 @@ class TestValidateArgs(TestCase):
         args = self.parser.parse_args(
             ["--source", "test.sfz", "--destination", "destinationDir"]
         )
-        response = validate_args(args)
-        self.assertTrue(response)
+        response = create_args(args)
+        self.assertEqual(
+            {
+                "destination": "destinationDir",
+                "destination_format": "obs",
+                "source": "test.sfz",
+            },
+            response,
+        )
 
     def test_valid_args_with_format(self):
         args = self.parser.parse_args(
@@ -87,5 +94,12 @@ class TestValidateArgs(TestCase):
                 "obs",
             ]
         )
-        response = validate_args(args)
-        self.assertTrue(response)
+        response = create_args(args)
+        self.assertEqual(
+            {
+                "destination": "destinationDir",
+                "destination_format": "obs",
+                "source": "test.sfz",
+            },
+            response,
+        )

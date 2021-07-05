@@ -21,7 +21,7 @@ def create_parser():
     return parser
 
 
-def validate_args(args):
+def create_args(args):
     source = args.source
     if not source:
         raise ConverterSourceException(
@@ -57,4 +57,8 @@ def validate_args(args):
             + "."
         )
         raise ConverterUnsupportedDestinationFormatException(error)
-    return True
+    return {
+        "source": source,
+        "destination": destination,
+        "destination_format": destination_format,
+    }

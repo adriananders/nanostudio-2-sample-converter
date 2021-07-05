@@ -30,11 +30,11 @@ OSCILLATOR_GROUP = {
     "default_settings": [
         {"attribute": "V", "key": "v", "default": "1"},  # Unknown what this means
         {"attribute": "Type", "key": "type", "default": "Split 3"},
-        {"attribute": "LL1", "key": "layer_low_1", "default": "0"},
-        {"attribute": "LL2", "key": "layer_low_2", "default": "0"},
-        {"attribute": "S2L1", "key": "split_2_low_1", "default": "0.5"},
-        {"attribute": "S3L1", "key": "split_3_low_1", "default": "0.5"},
-        {"attribute": "S3L2", "key": "split_3_low_2", "default": "0.75"},
+        {"attribute": "LL1", "key": "layer_level_1", "default": "0"},
+        {"attribute": "LL2", "key": "layer_level_2", "default": "0"},
+        {"attribute": "S2L1", "key": "split_2_level_1", "default": "0.5"},
+        {"attribute": "S3L1", "key": "split_3_level_1", "default": "0.5"},
+        {"attribute": "S3L2", "key": "split_3_level_2", "default": "0.75"},
         {"attribute": "LX1", "key": "layer_crossfade_1", "default": "0"},
         {"attribute": "LX2", "key": "layer_crossfade_2", "default": "0"},
     ],

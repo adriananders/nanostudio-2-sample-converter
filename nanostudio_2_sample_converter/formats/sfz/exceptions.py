@@ -37,3 +37,11 @@ class FfmpegNotInstalledException(Exception):
     """
 
     pass
+
+
+class DirectoryExistsException(Exception):
+    """
+    Indicates that specified destination already exists.
+    """
+
+    pass
