@@ -1,14 +1,12 @@
 # nanostudio-2-sample-converter
-Python 3 SFZ to NanoStudio 2 patch converter.
+Python 3 SFZ to NanoStudio 2 patch converter for MacOS and Windows.
 
 ## Installation
 1. Install dependencies
 
-    ### Homebrew (MacOS Only)
-    Follow Instructions to install [Homebrew](https://brew.sh/).
-
     ### Python
     #### MacOS
+    Follow Instructions to install [Homebrew](https://brew.sh/).
     ```brew update && brew install python```
     #### Windows
     1. Download Python installer from [python.org](https://www.python.org/).
