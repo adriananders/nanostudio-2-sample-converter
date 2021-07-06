@@ -1,5 +1,5 @@
 # nanostudio-2-sample-converter
-Python 3 SFZ to NanoStudio 2 patch converter for MacOS and Windows.
+Python 3 SFZ to NanoStudio 2 patch converter compatible with MacOS and Windows.
 
 ## Installation
 1. Install dependencies
